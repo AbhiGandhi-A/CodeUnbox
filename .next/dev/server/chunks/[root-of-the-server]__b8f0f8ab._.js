@@ -185,7 +185,6 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$bcryptjs$2f$
 ;
 ;
 const authOptions = {
-    // Use session strategy based on JWT (standard for stateless serverless functions)
     session: {
         strategy: "jwt"
     },
@@ -202,32 +201,32 @@ const authOptions = {
                     type: "password"
                 }
             },
-            // Explicitly define the return type as User | null (using the globally extended type)
             async authorize (credentials) {
                 if (!credentials) {
                     return null;
                 }
-                const { email, password } = credentials;
+                // 🌟 FIX: Normalize incoming login email to lowercase
+                const email = String(credentials.email).toLowerCase();
+                const { password } = credentials;
                 try {
                     const { db } = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$mongodb$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["connectToDatabase"])();
+                    // Search using the normalized lowercase email
                     const user = await db.collection("users").findOne({
                         email
                     });
                     if (!user) {
-                        console.error("Login failed: User not found for email:", email);
+                        console.error("LOGIN FAIL: User not found for email:", email);
                         throw new Error("Invalid credentials");
                     }
                     const isValid = await __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$bcryptjs$2f$index$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["default"].compare(password, user.password);
                     if (!isValid) {
-                        console.error("Login failed: Invalid password for email:", email);
+                        console.error("LOGIN FAIL: Invalid password for email:", email);
                         throw new Error("Invalid credentials");
                     }
-                    // Return an object that matches the ExtendedUser interface structure.
                     return {
                         id: user._id.toString(),
                         name: user.name,
                         email: user.email,
-                        // 💡 FIX 4: Use 'subscriptionPlan' instead of 'tier'
                         subscriptionPlan: user.subscriptionPlan || "free"
                     };
                 } catch (e) {
@@ -237,33 +236,26 @@ const authOptions = {
             }
         })
     ],
-    // Custom pages configuration to handle redirects
     pages: {
-        signIn: "/login",
-        error: "/login"
+        signIn: "/register",
+        error: "/register"
     },
     callbacks: {
-        // Add custom properties (id, subscriptionPlan) to the JWT
         async jwt ({ token, user, trigger, session }) {
             if (user) {
                 token.id = user.id;
-                // 💡 FIX 5: Use 'subscriptionPlan' instead of 'tier'
                 token.subscriptionPlan = user.subscriptionPlan;
             }
-            // 💡 FIX 6: Handle session refresh triggered by update() call from client
             if (trigger === "update" && session && session.subscriptionPlan) {
-                // Update the token's subscriptionPlan with the new value from the update() payload
                 token.subscriptionPlan = session.subscriptionPlan;
             }
             return token;
         },
-        // Add custom properties (id, subscriptionPlan) to the session object exposed on the client
         async session ({ session, token }) {
             if (session.user) {
-                // @ts-ignore: Add custom properties to session.user
+                // @ts-ignore
                 session.user.id = token.id;
-                // 💡 FIX 7: Use 'subscriptionPlan' instead of 'tier'
-                // @ts-ignore: Access token.subscriptionPlan
+                // @ts-ignore
                 session.user.subscriptionPlan = token.subscriptionPlan;
             }
             return session;

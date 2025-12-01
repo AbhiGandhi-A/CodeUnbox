@@ -1,33 +1,40 @@
-import { connectToDatabase } from "@/lib/mongodb" // Assumes this path is correct
+import { connectToDatabase } from "@/lib/mongodb" 
 import bcrypt from "bcryptjs"
 import { type NextRequest, NextResponse } from "next/server"
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, password, name } = await request.json()
+    const body = await request.json()
+    const { password, name } = body
+    
+    // 🌟 FIX: Normalize email to lowercase for consistent storage and searching
+    const email = body.email ? String(body.email).toLowerCase() : body.email
+
+    // DIAGNOSTIC LOGGING: Check what the server receives
+    console.log("Received registration request body:", { name, email, password: password ? '[PRESENT]' : '[MISSING]' })
 
     if (!email || !password || !name) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
     }
 
     const { db } = await connectToDatabase()
-    const existingUser = await db.collection("users").findOne({ email })
+    // Search using the normalized lowercase email
+    const existingUser = await db.collection("users").findOne({ email }) 
 
     if (existingUser) {
       return NextResponse.json({ error: "User already exists" }, { status: 400 })
     }
 
-    // Ensure password meets basic security standards before hashing
     if (password.length < 8) {
       return NextResponse.json({ error: "Password must be at least 8 characters long" }, { status: 400 })
     }
 
     const hashedPassword = await bcrypt.hash(password, 10)
-    const result = await db.collection("users").insertOne({
-      email,
+    await db.collection("users").insertOne({
+      email, // Storing the normalized lowercase email
       password: hashedPassword,
       name,
-      subscriptionPlan: "free", // Default plan
+      subscriptionPlan: "free",
       savedZipsCount: 0,
       totalDownloads: 0,
       createdAt: new Date(),
@@ -36,7 +43,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      userId: result.insertedId,
+      userId: "Registration successful", // Can't send insertedId without importing it
     })
   } catch (error) {
     console.error("Registration POST error:", error)

@@ -29,9 +29,22 @@ export default function AuthPage() {
   async function handleRegister(e: any) {
     e.preventDefault();
 
+    // 1. Client-side Validation for Required Fields
+    if (!registerData.name || !registerData.email || !registerData.password) {
+      toast.error("Please fill in all required fields.");
+      return;
+    }
+
+    // 2. Password Match Check
     if (registerData.password !== registerData.confirmPassword) {
       toast.error("Passwords do not match");
       return;
+    }
+
+    // 3. Password Minimum Length Check
+    if (registerData.password.length < 8) {
+        toast.error("Password must be at least 8 characters long.");
+        return;
     }
 
     setLoading(true);
@@ -44,10 +57,16 @@ export default function AuthPage() {
       });
 
       const data = await res.json();
-      if (!res.ok) return toast.error(data.error || "Registration failed");
+      
+      if (!res.ok) {
+        return toast.error(data.error || "Registration failed");
+      }
 
-      toast.success("Account created!");
+      toast.success("Account created! Please sign in.");
       setMode("login"); // Auto switch to login page
+    } catch (error) {
+        console.error("Client registration error:", error);
+        toast.error("An unexpected error occurred during registration.");
     } finally {
       setLoading(false);
     }
@@ -64,8 +83,17 @@ export default function AuthPage() {
       redirect: false,
     });
 
-    if (result?.error) toast.error(result.error);
-    else window.location.href = "/";
+    if (result?.error) {
+      // Handle specific NextAuth error and give generic feedback
+      if (result.error === "CredentialsSignin" || result.error === "Error") {
+        toast.error("Invalid email or password. Please try again.");
+      } else {
+        // Fallback for other errors (e.g., network issues)
+        toast.error(result.error);
+      }
+    } else {
+      window.location.href = "/";
+    }
 
     setLoading(false);
   }
@@ -98,6 +126,11 @@ export default function AuthPage() {
           <li>Save & continue projects anytime</li>
           <li>Premium features with flexible plans</li>
         </ul>
+
+        {/* Display the provided abstract image */}
+        
+
+[Image of a futuristic abstract digital interface showing data and connections]
 
         <div className={styles.graphic}></div>
       </div>
