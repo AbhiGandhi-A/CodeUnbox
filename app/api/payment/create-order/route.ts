@@ -1,76 +1,77 @@
-import crypto from "crypto"
-import { NextResponse } from "next/server"
-import { getServerSession } from "next-auth"     // ✅ Only this import
-import { authOptions } from "@/lib/auth-config"
 import { connectToDatabase } from "@/lib/mongodb"
-import { ObjectId } from "mongodb"
+import { NextRequest, NextResponse } from "next/server"
+import { getServerSession } from "next-auth/next"
+import { authOptions } from "@/lib/auth-config"
+import Razorpay from "razorpay"
 
-export async function POST(req: Request) {
+export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
+    const RAZORPAY_KEY_ID =
+      process.env.RAZORPAY_KEY_ID || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID
+    const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET
 
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Not authenticated" }, { status: 401 })
-    }
-
-    const { orderId, paymentId, signature } = await req.json()
-
-    const expectedSignature = crypto
-      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET!)
-      .update(`${orderId}|${paymentId}`)
-      .digest("hex")
-
-    if (expectedSignature !== signature) {
+    if (!RAZORPAY_KEY_ID || !RAZORPAY_KEY_SECRET) {
+      console.error("Missing Razorpay keys")
       return NextResponse.json(
-        { error: "Signature mismatch" },
-        { status: 400 }
+        { error: "Payment system misconfigured" },
+        { status: 500 }
       )
     }
 
-    const { db } = await connectToDatabase()
-
-    const order = await db.collection("orders").findOne({ orderId })
-    if (!order) {
-      return NextResponse.json({ error: "Order not found" }, { status: 404 })
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "Authentication required" }, { status: 401 })
     }
 
-    // EXPIRY
-    const expiry = new Date()
-    if (order.plan === "monthly") expiry.setMonth(expiry.getMonth() + 1)
-    else expiry.setFullYear(expiry.getFullYear() + 1)
+    const { plan } = await request.json()
 
-    // UPDATE USER
-    await db.collection("users").updateOne(
-      { _id: new ObjectId(session.user.id) },
-      {
-        $set: {
-          subscriptionPlan: order.plan,
-          subscriptionExpiry: expiry,
-          updatedAt: new Date(),
-        },
-      }
-    )
+    const plans: any = {
+      monthly: { amount: 100, period: "month" },
+      yearly: { amount: 49900, period: "year" },
+    }
 
-    // UPDATE ORDER
-    await db.collection("orders").updateOne(
-      { orderId },
-      {
-        $set: {
-          status: "verified",
-          paymentId,
-          verifiedAt: new Date(),
-        },
-      }
-    )
+    if (!plans[plan]) {
+      return NextResponse.json({ error: "Invalid plan selected" }, { status: 400 })
+    }
+
+    const razorpay = new Razorpay({
+      key_id: RAZORPAY_KEY_ID,
+      key_secret: RAZORPAY_KEY_SECRET,
+    })
+
+    // 🔥 FIXED: Razorpay max 40 chars
+    const receiptId = `ord_${session.user.id.slice(-6)}_${Date.now().toString().slice(-6)}`
+
+    const order = await razorpay.orders.create({
+      amount: plans[plan].amount,
+      currency: "INR",
+      receipt: receiptId,
+    })
+
+    const { db } = await connectToDatabase()
+
+    await db.collection("orders").insertOne({
+      orderId: order.id,
+      receiptId,
+      userId: session.user.id,
+      email: session.user.email,
+      plan,
+      amount: plans[plan].amount,
+      status: "created",
+      createdAt: new Date(),
+    })
 
     return NextResponse.json({
       success: true,
-      plan: order.plan,
+      orderId: order.id,
+      amount: order.amount,
+      currency: order.currency,
     })
-  } catch (err) {
-    console.error("Verify error:", err)
+  } catch (error: any) {
+    console.error("❌ Order creation failed:", error)
+
     return NextResponse.json(
-      { error: "Verification failed" },
+      { error: error?.error?.description || "Failed to create order" },
       { status: 500 }
     )
   }

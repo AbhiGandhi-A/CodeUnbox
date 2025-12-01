@@ -45,6 +45,7 @@ const PLANS: Plan[] = [
 ]
 
 export default function BillingPage() {
+  // Use the update function for session refresh after payment
   const { data: session, status, update } = useSession()
   const router = useRouter()
 
@@ -57,28 +58,32 @@ export default function BillingPage() {
     if (status === "unauthenticated") router.push("/login")
   }, [status, router])
 
-  // Fetch subscription plan from DB
+  // Fetch current subscription from API on load
   useEffect(() => {
     if (!session?.user) return
 
     const fetchUserPlan = async () => {
       try {
+        // This API call fetches the subscriptionPlan directly from the database
         const response = await fetch("/api/user/stats")
         const data = await response.json()
         if (data.success) {
+          // 💡 This line ensures the component state reflects the database value ('free')
           setCurrentPlan(data.stats.subscriptionPlan || "free")
+        } else {
+          toast.error("Failed to load user plan.")
         }
-      } catch (error) {
-        console.error("Failed to fetch plan:", error)
+      } catch (err) {
+        console.error("Failed to fetch plan:", err)
       } finally {
         setIsLoading(false)
       }
     }
 
     fetchUserPlan()
-  }, [session])
+  }, [session]) // Runs on component mount and whenever session changes
 
-  // Razorpay script
+  // Load Razorpay script once
   useEffect(() => {
     const script = document.createElement("script")
     script.src = "https://checkout.razorpay.com/v1/checkout.js"
@@ -86,8 +91,17 @@ export default function BillingPage() {
     document.body.appendChild(script)
   }, [])
 
+  // Helper function to render plan name
   const renderPlanName = (plan: string) => {
-    return plan === "monthly" ? "Monthly" : plan === "yearly" ? "Yearly" : "Free"
+    switch (plan) {
+      case "monthly":
+        return "Monthly"
+      case "yearly":
+        return "Yearly"
+      case "free":
+      default:
+        return "Free"
+    }
   }
 
   const handleUpgrade = async (planId: "monthly" | "yearly") => {
@@ -98,14 +112,15 @@ export default function BillingPage() {
 
     const razorpayKey = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID
     if (!razorpayKey) {
-      console.error("❌ Missing Razorpay key")
-      toast.error("Payment system not configured")
+      console.error("❌ Missing NEXT_PUBLIC_RAZORPAY_KEY_ID")
+      toast.error("Payment system configuration error")
       return
     }
 
     setIsProcessing(true)
 
     try {
+      // Create Razorpay Order
       const orderResponse = await fetch("/api/payment/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -115,12 +130,14 @@ export default function BillingPage() {
       const orderData = await orderResponse.json()
 
       if (!orderResponse.ok) {
+        console.error("API Error creating order:", orderData.error)
         toast.error(orderData.error || "Failed to create order")
         return
       }
 
       console.log("Order Created:", orderData.orderId)
 
+      // Razorpay Checkout Options
       const options = {
         key: razorpayKey,
         amount: orderData.amount,
@@ -143,11 +160,12 @@ export default function BillingPage() {
 
             if (verifyResponse.ok) {
               toast.success(`Subscription upgraded to ${planId}`)
-
-              // 🔥 Immediate UI update
+              
+              // 1. Update local state immediately
               setCurrentPlan(planId)
 
-              // 🔥 Refresh NextAuth session (CRITICAL FIX)
+              // 2. Refresh the NextAuth session to update the JWT/Session
+              // This prevents the plan from reverting on refresh.
               await update({ subscriptionPlan: planId })
 
               setTimeout(() => router.push("/dashboard"), 1500)
@@ -167,13 +185,14 @@ export default function BillingPage() {
       }
 
       if (window.Razorpay) {
-        new window.Razorpay(options).open()
+        const rzp = new window.Razorpay(options)
+        rzp.open()
       } else {
-        toast.error("Razorpay failed to load")
+        toast.error("Razorpay failed to load. Please try again.")
       }
-    } catch (error) {
-      console.error("Unexpected error:", error)
-      toast.error("Upgrade failed")
+    } catch (err) {
+      console.error("Unexpected error:", err)
+      toast.error("Upgrade process failed")
     } finally {
       setIsProcessing(false)
     }
@@ -204,13 +223,16 @@ export default function BillingPage() {
         </nav>
       </div>
 
-      {/* Main */}
+      {/* Main Content */}
       <main className={styles.content}>
         <h1 className={styles.title}>Billing & Plans</h1>
 
+        {/* 💡 FIX: Use renderPlanName for cleaner display logic */}
         <div className={styles.currentPlan}>
           <p className={styles.label}>Current Plan</p>
-          <h2 className={styles.planName}>{renderPlanName(currentPlan)}</h2>
+          <h2 className={styles.planName}>
+            {renderPlanName(currentPlan)}
+          </h2>
         </div>
 
         <div className={styles.plansGrid}>
@@ -248,17 +270,19 @@ export default function BillingPage() {
 
           <div className={styles.faqItem}>
             <h4>Can I cancel anytime?</h4>
-            <p>You retain access until the end of the billing period.</p>
+            <p>
+              Yes, cancel anytime — you retain access until the end of your billing period.
+            </p>
           </div>
 
           <div className={styles.faqItem}>
             <h4>What payment methods do you accept?</h4>
-            <p>UPI, cards, wallets through Razorpay.</p>
+            <p>All debit cards, credit cards, UPI, wallets through Razorpay.</p>
           </div>
 
           <div className={styles.faqItem}>
             <h4>Can I switch plans?</h4>
-            <p>Yes, anytime.</p>
+            <p>Yes, upgrades and downgrades are supported anytime.</p>
           </div>
         </section>
       </main>

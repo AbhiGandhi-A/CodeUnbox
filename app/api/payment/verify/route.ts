@@ -1,51 +1,50 @@
-import crypto from "crypto"
-import { NextResponse } from "next/server"
-import { getServerSession } from "next-auth"
-import { authOptions } from "@/lib/auth-config"
 import { connectToDatabase } from "@/lib/mongodb"
+import { NextRequest, NextResponse } from "next/server"
+import { getServerSession } from "next-auth/next"
+import { authOptions } from "@/lib/auth-config"
+import crypto from "crypto"
 import { ObjectId } from "mongodb"
 
-export async function POST(req: Request) {
+export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
+    const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET
 
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Not authenticated" }, { status: 401 })
+    if (!RAZORPAY_KEY_SECRET) {
+      return NextResponse.json(
+        { error: "Payment server misconfigured" },
+        { status: 500 }
+      )
     }
 
-    const { orderId, paymentId, signature } = await req.json()
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "Authentication required" }, { status: 401 })
+    }
 
-    const expectedSignature = crypto
-      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET!)
+    const { orderId, paymentId, signature } = await request.json()
+
+    // Signature verification
+    const expected = crypto
+      .createHmac("sha256", RAZORPAY_KEY_SECRET)
       .update(`${orderId}|${paymentId}`)
       .digest("hex")
 
-    if (expectedSignature !== signature) {
-      return NextResponse.json({ error: "Signature mismatch" }, { status: 400 })
+    if (expected !== signature) {
+      return NextResponse.json(
+        { error: "Payment verification failed" },
+        { status: 400 }
+      )
     }
 
     const { db } = await connectToDatabase()
-    const order = await db.collection("orders").findOne({ orderId })
 
+    // Fetch order details
+    const order = await db.collection("orders").findOne({ orderId })
     if (!order) {
       return NextResponse.json({ error: "Order not found" }, { status: 404 })
     }
 
-    const expiry = new Date()
-    if (order.plan === "monthly") expiry.setMonth(expiry.getMonth() + 1)
-    else expiry.setFullYear(expiry.getFullYear() + 1)
-
-    await db.collection("users").updateOne(
-      { _id: new ObjectId(session.user.id) },
-      {
-        $set: {
-          subscriptionPlan: order.plan,
-          subscriptionExpiry: expiry,
-          updatedAt: new Date(),
-        },
-      }
-    )
-
+    // Update order status
     await db.collection("orders").updateOne(
       { orderId },
       {
@@ -57,9 +56,30 @@ export async function POST(req: Request) {
       }
     )
 
-    return NextResponse.json({ success: true, plan: order.plan })
-  } catch (err) {
-    console.error("Verify error:", err)
+    // Calculate subscription expiry
+    const expiry = new Date()
+    if (order.plan === "monthly") expiry.setMonth(expiry.getMonth() + 1)
+    else expiry.setFullYear(expiry.getFullYear() + 1)
+
+    // Update user's subscription in the database
+    await db.collection("users").updateOne(
+      { _id: new ObjectId(session.user.id) },
+      {
+        $set: {
+          subscriptionPlan: order.plan,
+          subscriptionExpiry: expiry,
+          updatedAt: new Date(),
+        },
+      }
+    )
+
+    return NextResponse.json({
+      success: true,
+      message: "Payment verified",
+      plan: order.plan,
+    })
+  } catch (error) {
+    console.error("Verification error:", error)
     return NextResponse.json({ error: "Verification failed" }, { status: 500 })
   }
 }
