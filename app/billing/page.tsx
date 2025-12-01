@@ -49,8 +49,6 @@ export default function BillingPage() {
   const router = useRouter()
 
   const [currentPlan, setCurrentPlan] = useState<string>("free")
-  
-  // Use separate loading states for initial data fetch and script load for better control
   const [isDataLoading, setIsDataLoading] = useState(true)
   const [isScriptLoaded, setIsScriptLoaded] = useState(false)
   
@@ -65,7 +63,6 @@ export default function BillingPage() {
   useEffect(() => {
     if (status !== "authenticated" || !session?.user?.id) return
 
-    // Check NextAuth Session first for instant client-side update
     if (session.user.subscriptionPlan && session.user.subscriptionPlan !== "anonymous") {
       setCurrentPlan(session.user.subscriptionPlan)
       setIsDataLoading(false)
@@ -92,18 +89,16 @@ export default function BillingPage() {
     fetchUserPlan()
   }, [session, status])
 
-  // --- 2. Load Razorpay script once (Fixes the console error) ---
+  // --- 2. Load Razorpay script once ---
   useEffect(() => {
     const script = document.createElement("script")
     script.src = "https://checkout.razorpay.com/v1/checkout.js"
     script.async = true
 
-    // When the script loads successfully
     script.onload = () => {
       setIsScriptLoaded(true)
     } 
     
-    // When the script fails to load (Addressing the Console Error)
     script.onerror = () => {
       console.error("Failed to load Razorpay script. Check network connection or script source.")
       toast.error("Payment system failed to load. Please check your connection.")
@@ -121,16 +116,12 @@ export default function BillingPage() {
   const finalLoading = status === "loading" || isDataLoading || !isScriptLoaded;
 
 
-  // Helper function to render plan name
   const renderPlanName = (plan: string) => {
     switch (plan) {
-      case "monthly":
-        return "Monthly"
-      case "yearly":
-        return "Yearly"
+      case "monthly": return "Monthly"
+      case "yearly": return "Yearly"
       case "free":
-      default:
-        return "Free"
+      default: return "Free"
     }
   }
 
@@ -145,7 +136,6 @@ export default function BillingPage() {
       return
     }
 
-    // 💡 FIX: Ensure we use the NEXT_PUBLIC_ key for client-side check
     const razorpayKey = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID 
     if (!razorpayKey) {
       console.error("❌ Missing NEXT_PUBLIC_RAZORPAY_KEY_ID")
@@ -168,6 +158,7 @@ export default function BillingPage() {
       if (!orderResponse.ok) {
         console.error("API Error creating order:", orderData.error)
         toast.error(orderData.error || "Failed to create order")
+        setIsProcessing(false) // Reset on API failure
         return
       }
 
@@ -179,7 +170,11 @@ export default function BillingPage() {
         amount: orderData.amount,
         currency: orderData.currency,
         order_id: orderData.orderId,
+        name: "CodeUnbox Subscription",
+        description: `${renderPlanName(planId)} Plan`,
+        image: "/logo.png", // Recommended: Add your logo here
 
+        // --- Core Payment Success Handler ---
         handler: async (response: any) => {
           try {
             // 3. Verify Payment
@@ -196,11 +191,14 @@ export default function BillingPage() {
             const verifyData = await verifyResponse.json()
 
             if (verifyResponse.ok) {
-              toast.success(`Subscription upgraded to ${planId.charAt(0).toUpperCase() + planId.slice(1)}! You can now access all premium features.`)
+              toast.success(`Subscription upgraded to ${renderPlanName(planId)}! You can now access all premium features.`)
               
               // 4. Update state and session
               await update({ subscriptionPlan: planId }) 
               setCurrentPlan(planId)
+              
+              // 💡 IMPORTANT: Successfully verified and state updated.
+              // The `finally` block in the parent `handleUpgrade` will handle the processing reset.
               
             } else {
               toast.error(verifyData.error || "Verification failed")
@@ -209,39 +207,66 @@ export default function BillingPage() {
             console.error("Verification error:", error)
             toast.error("Payment verification failed")
           } finally {
-            setIsProcessing(false)
+             // Reset processing state *only* if the verification failed, 
+             // otherwise let the modal's ondismiss or final outer finally handle it.
+             // Given Razorpay might handle closing *before* the API call completes,
+             // let's rely on the outer finally block for a clean reset, and ensure 
+             // the handler runs fully.
           }
         },
-
+        // --- Pre-filled User Details ---
         prefill: {
           name: session.user.name,
           email: session.user.email,
         },
+        // --- Modal Dismissal Handler (Fires when user closes the modal without payment) ---
         modal: {
             ondismiss: () => {
+                // This ensures the button is re-enabled if the user closes the modal manually
                 setIsProcessing(false);
+                toast("Payment window closed. Try again if you wish to upgrade.");
             }
         }
       }
 
       const rzp = new window.Razorpay(options)
+      
+      // --- Payment Failure Hook ---
       rzp.on('payment.failed', (response: any) => {
           console.error("Payment failed:", response.error);
           toast.error(`Payment failed: ${response.error.description || 'Check details and try again.'}`);
-          setIsProcessing(false);
+          setIsProcessing(false); // Reset processing on payment failure
       });
+
       rzp.open()
       
     } catch (err) {
-      console.error("Unexpected error:", err)
-      toast.error("Upgrade process failed")
+      console.error("Unexpected error in upgrade process:", err)
+      toast.error("Upgrade process failed due to an unexpected error.")
     } finally {
-      // Reset isProcessing if error occurred before Razorpay modal opened
-      // If modal opened, it is handled in modal.ondismiss or handler finally
-      // We rely on the internal resets now that we have them.
+      // 💡 FIX: Forcing an update after a short delay to handle cases where 
+      // the Razorpay modal may have closed successfully but failed to trigger a cleanup
+      // that relies on the `ondismiss` hook.
+      // If payment was successful and verified, the button should show "Current Plan" 
+      // and not be stuck on "Processing...".
+       
+       // Note: If the handler runs successfully, it calls `update()` which triggers 
+       // a re-render and re-fetch of user data, setting the correct plan.
+       // The `isProcessing` state is usually handled by `modal.ondismiss` or `payment.failed` 
+       // hooks, but sometimes the modal closure is inconsistent in deployed environments.
+       
+       // A quick check after a short wait helps.
+       setTimeout(() => {
+           if (currentPlan !== planId && status === "authenticated") {
+              // This is a last-resort check to unstick the button 
+              // if payment failed silently or cleanup was skipped.
+               setIsProcessing(false);
+           }
+       }, 5000);
     }
   }
 
+  // ... (rest of the component structure remains the same)
   if (finalLoading) {
     return <div className={styles.loading}>Loading...</div>
   }
