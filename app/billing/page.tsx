@@ -24,7 +24,7 @@ interface Plan {
 const PLANS: Plan[] = [
   {
     name: "Monthly",
-    price: 2,
+    price: 1,
     period: "month",
     id: "monthly",
     features: ["Save up to 5 ZIP folders", "Extract unlimited files", "Unlimited downloads", "Share files with PIN"],
