@@ -8,13 +8,13 @@ declare module "next-auth" {
   interface Session {
     user: {
       id: string // Add the 'id' property here
-      subscriptionPlan: "free" | "monthly" | "yearly" // Add custom property
+      subscriptionPlan: "free" | "monthly" | "yearly" | "anonymous" // Add custom property
     } & DefaultSession["user"]
   }
 
   // Extend the User object (used in the database and adapter)
   interface User extends DefaultUser {
     id: string
-    subscriptionPlan: "free" | "monthly" | "yearly"
+    subscriptionPlan: "free" | "monthly" | "yearly" | "anonymous"
   }
 }

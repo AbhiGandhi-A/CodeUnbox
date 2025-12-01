@@ -2789,9 +2789,9 @@ function Home() {
             }
         }), []);
     /**
-	 * Memoized function to retrieve file content and name based on path.
-	 * This is required by ShareModal.tsx to send the full file object to the API.
-	 */ const getFileContent = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useCallback"])((path)=>{
+   * Memoized function to retrieve file content and name based on path.
+   * This is required by ShareModal.tsx to send the full file object to the API.
+   */ const getFileContent = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useCallback"])((path)=>{
         const file = selectedFiles.find((f)=>f.path === path);
         if (file) {
             // We need to extract the name, as the selectedFiles array doesn't explicitly store it
@@ -2833,15 +2833,30 @@ function Home() {
         setFileTree(null);
         setSelectedFiles([]);
         setSelectedFilePaths(new Set());
+        // ⭐ Client-side check for file size (pre-flight check)
+        // The server has a hard 25MB limit. Checking here gives a better error message.
+        const MAX_UPLOAD_MB = 25;
+        if (file.size > MAX_UPLOAD_MB * 1024 * 1024) {
+            setError(`File size exceeds the maximum limit of ${MAX_UPLOAD_MB}MB.`);
+            setIsLoading(false);
+            return;
+        }
         try {
             const formData = new FormData();
             formData.append("file", file);
-            const result = await fetch("/api/zip/extract", {
+            const response = await fetch("/api/zip/extract", {
                 method: "POST",
                 body: formData
             });
-            const data = await result.json();
-            if (!result.ok) {
+            // Handle 413 (Content Too Large) errors which return non-JSON responses
+            if (response.status === 413) {
+                // This handles the upstream proxy limit, which often returns a non-JSON page
+                setError("File upload failed: The file is too large for Free Plan If You Want to upload large zip file please upgrade to monthly or yearly plan");
+                return;
+            }
+            const data = await response.json();
+            if (!response.ok) {
+                // This handles application-level errors (like 403 file count limit)
                 setError(data.error || "Failed to extract zip file");
                 return;
             }
@@ -2856,17 +2871,13 @@ function Home() {
             setFileCount(data.fileCount);
             setSessionId(data.sessionId);
         } catch (err) {
-            setError(err instanceof Error ? err.message : "An error occurred");
+            setError(err instanceof Error ? err.message : "An error occurred during upload or parsing.");
         } finally{
             setIsLoading(false);
         }
     }, []);
     // NOTE: handleFileSelect is now only responsible for tracking which files are open in the editor.
     // It no longer needs to fetch content if all content is loaded on upload.
-    // However, your original implementation fetches file content on select. I'll preserve the fetch logic 
-    // but skip adding to `selectedFiles` if it's already present (since it's all loaded on upload now).
-    // To avoid redundancy and fix the file count issue, I'll remove the content fetching logic from here
-    // and assume `selectedFiles` contains all file content after `handleUpload`.
     const handleFileSelect = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useCallback"])((filePath)=>{
         const isAlreadySelected = selectedFilePaths.has(filePath);
         if (isAlreadySelected) {
@@ -2902,8 +2913,8 @@ function Home() {
                 files: selectedFiles
             }, void 0, false, {
                 fileName: "[project]/app/page.tsx",
-                lineNumber: 179,
-                columnNumber: 4
+                lineNumber: 191,
+                columnNumber: 7
             }, this),
             error && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: __TURBOPACK__imported__module__$5b$project$5d2f$app$2f$page$2e$module$2e$css__$5b$app$2d$ssr$5d$__$28$css__module$29$__["default"].errorBanner,
@@ -2913,16 +2924,16 @@ function Home() {
                         children: "⚠️"
                     }, void 0, false, {
                         fileName: "[project]/app/page.tsx",
-                        lineNumber: 195,
-                        columnNumber: 6
+                        lineNumber: 207,
+                        columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                         className: __TURBOPACK__imported__module__$5b$project$5d2f$app$2f$page$2e$module$2e$css__$5b$app$2d$ssr$5d$__$28$css__module$29$__["default"].errorMessage,
                         children: error
                     }, void 0, false, {
                         fileName: "[project]/app/page.tsx",
-                        lineNumber: 196,
-                        columnNumber: 6
+                        lineNumber: 208,
+                        columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                         className: __TURBOPACK__imported__module__$5b$project$5d2f$app$2f$page$2e$module$2e$css__$5b$app$2d$ssr$5d$__$28$css__module$29$__["default"].errorClose,
@@ -2931,19 +2942,19 @@ function Home() {
                         children: "×"
                     }, void 0, false, {
                         fileName: "[project]/app/page.tsx",
-                        lineNumber: 197,
-                        columnNumber: 6
+                        lineNumber: 209,
+                        columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/page.tsx",
-                lineNumber: 194,
-                columnNumber: 5
+                lineNumber: 206,
+                columnNumber: 9
             }, this),
             !session && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$PricingNotice$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["PricingNotice"], {}, void 0, false, {
                 fileName: "[project]/app/page.tsx",
-                lineNumber: 204,
-                columnNumber: 17
+                lineNumber: 216,
+                columnNumber: 20
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ShareModal$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["ShareModal"], {
                 isOpen: showShareModal,
@@ -2952,16 +2963,16 @@ function Home() {
                 getFileContent: getFileContent
             }, void 0, false, {
                 fileName: "[project]/app/page.tsx",
-                lineNumber: 206,
-                columnNumber: 4
+                lineNumber: 218,
+                columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$AccessSharedFiles$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AccessSharedFiles"], {
                 isOpen: showAccessShared,
                 onClose: ()=>setShowAccessShared(false)
             }, void 0, false, {
                 fileName: "[project]/app/page.tsx",
-                lineNumber: 213,
-                columnNumber: 4
+                lineNumber: 225,
+                columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: __TURBOPACK__imported__module__$5b$project$5d2f$app$2f$page$2e$module$2e$css__$5b$app$2d$ssr$5d$__$28$css__module$29$__["default"].mainContent,
@@ -2974,26 +2985,26 @@ function Home() {
                             selectedFiles: selectedFilePaths
                         }, void 0, false, {
                             fileName: "[project]/app/page.tsx",
-                            lineNumber: 218,
-                            columnNumber: 7
+                            lineNumber: 230,
+                            columnNumber: 13
                         }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             className: __TURBOPACK__imported__module__$5b$project$5d2f$app$2f$page$2e$module$2e$css__$5b$app$2d$ssr$5d$__$28$css__module$29$__["default"].empty,
                             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                 children: "Upload a .zip file to explore its contents"
                             }, void 0, false, {
                                 fileName: "[project]/app/page.tsx",
-                                lineNumber: 221,
-                                columnNumber: 8
+                                lineNumber: 233,
+                                columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/app/page.tsx",
-                            lineNumber: 220,
-                            columnNumber: 7
+                            lineNumber: 232,
+                            columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/app/page.tsx",
-                        lineNumber: 216,
-                        columnNumber: 5
+                        lineNumber: 228,
+                        columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("main", {
                         className: __TURBOPACK__imported__module__$5b$project$5d2f$app$2f$page$2e$module$2e$css__$5b$app$2d$ssr$5d$__$28$css__module$29$__["default"].editor,
@@ -3004,25 +3015,25 @@ function Home() {
                             userTier: userTier
                         }, void 0, false, {
                             fileName: "[project]/app/page.tsx",
-                            lineNumber: 227,
-                            columnNumber: 6
+                            lineNumber: 239,
+                            columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/app/page.tsx",
-                        lineNumber: 225,
-                        columnNumber: 5
+                        lineNumber: 237,
+                        columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/page.tsx",
-                lineNumber: 215,
-                columnNumber: 4
+                lineNumber: 227,
+                columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/app/page.tsx",
-        lineNumber: 178,
-        columnNumber: 3
+        lineNumber: 190,
+        columnNumber: 5
     }, this);
 }
 function buildFileTree(files) {
