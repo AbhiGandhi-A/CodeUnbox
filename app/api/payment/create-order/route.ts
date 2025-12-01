@@ -1,4 +1,3 @@
-// /api/payment/create-order
 import { connectToDatabase } from "@/lib/mongodb"
 import { NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "next-auth/next"
@@ -7,6 +6,7 @@ import Razorpay from "razorpay"
 
 export async function POST(request: NextRequest) {
   try {
+    // Rely on private keys for server-side operations
     const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID
     const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET
 
@@ -27,8 +27,8 @@ export async function POST(request: NextRequest) {
 
     // Amounts should be in the smallest currency unit (paise for INR)
     const plans: any = {
-      monthly: { amount: 200, period: "month" }, // ₹2.00
-      yearly: { amount: 49900, period: "year" }, // ₹499.00
+      monthly: { amount: 200, period: "month" }, // Assuming ₹2 is 200 paise
+      yearly: { amount: 49900, period: "year" }, // Assuming ₹499 is 49900 paise
     }
 
     if (!plans[plan]) {
@@ -40,6 +40,7 @@ export async function POST(request: NextRequest) {
       key_secret: RAZORPAY_KEY_SECRET,
     })
 
+    // Fixed: Razorpay max 40 chars
     const receiptId = `ord_${session.user.id.slice(-6)}_${Date.now().toString().slice(-6)}`
 
     const order = await razorpay.orders.create({
