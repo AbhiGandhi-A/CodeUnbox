@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
-import styles from "..register/register.module.css";
+import styles from "./login.module.css";
 import { signIn } from "next-auth/react";
 
 export default function AuthPage() {
