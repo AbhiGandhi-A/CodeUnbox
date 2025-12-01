@@ -54,7 +54,8 @@ export async function POST(request: NextRequest) {
     if (fileCount > limits.maxFilesPerZip) {
       return NextResponse.json(
         {
-          error: `Exceeded file limit. Your plan allows ${limits.maxFilesPerZip} files. Please upgrade your plan.`,
+          // Updated message to explicitly mention upgrading subscription
+          error: `Exceeded file count limit of ${limits.maxFilesPerZip} files for your current plan. To upload files containing more than ${limits.maxFilesPerZip} entries, please upgrade your subscription.`,
         },
         { status: 403 },
       )
