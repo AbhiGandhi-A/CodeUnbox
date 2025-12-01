@@ -1,14 +1,13 @@
+// next-auth.d.ts
+
 import NextAuth, { DefaultSession, DefaultUser } from "next-auth"
 
-// Extend the User type to include the 'id' and 'subscriptionPlan' properties
+// Extend the Session object
 declare module "next-auth" {
-  /**
-   * Returned by useSession, getSession and received as a prop on the SessionProvider
-   */
   interface Session {
     user: {
-      id: string // Add the 'id' property here
-      subscriptionPlan: "free" | "monthly" | "yearly" | "anonymous" // Add custom property
+      id: string
+      subscriptionPlan: "free" | "monthly" | "yearly" | "anonymous"
     } & DefaultSession["user"]
   }
 

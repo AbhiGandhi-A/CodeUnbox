@@ -5,6 +5,7 @@ import { Analytics } from "@vercel/analytics/next"
 // import { ThemeProvider } from "./theme-provider"
 import { Providers } from "./providers" // <-- NEW IMPORT
 import "./globals.css"
+<script src="https://checkout.razorpay.com/v1/checkout.js" async></script>
 
 export const metadata: Metadata = {
   title: "Code Explorer - Developer Tool",
