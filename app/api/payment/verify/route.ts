@@ -1,3 +1,4 @@
+// /api/payment/verify
 import { connectToDatabase } from "@/lib/mongodb"
 import { NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "next-auth/next"
@@ -11,42 +12,51 @@ export async function POST(request: NextRequest) {
 
     if (!RAZORPAY_KEY_SECRET) {
       return NextResponse.json(
-        { error: "Payment server misconfigured" },
+        { success: false, error: "Payment server misconfigured" },
         { status: 500 }
       )
     }
 
     const session = await getServerSession(authOptions)
     if (!session?.user?.id) {
-      return NextResponse.json({ error: "Authentication required" }, { status: 401 })
+      return NextResponse.json({ success: false, error: "Authentication required" }, { status: 401 })
     }
 
-    const { orderId, paymentId, signature } = await request.json()
+    // Use the names sent from the client component (fixed in BillingPage.tsx)
+    const { 
+        razorpay_order_id: orderId, 
+        razorpay_payment_id: paymentId, 
+        razorpay_signature: signature,
+        plan, // The expected plan from client
+        userId // The user ID from client
+    } = await request.json()
 
-    // Signature verification
-    const expected = crypto
-      .createHmac("sha256", RAZORPAY_KEY_SECRET as string) // Assert type for Hmac function
+    if (!orderId || !paymentId || !signature || !plan || !userId) {
+         return NextResponse.json(
+            { success: false, error: "Missing required verification data." },
+            { status: 400 }
+        )
+    }
+    
+    // --- Step 1: Signature Verification ---
+    const expectedSignature = crypto
+      .createHmac("sha256", RAZORPAY_KEY_SECRET as string) 
       .update(`${orderId}|${paymentId}`)
       .digest("hex")
 
-    if (expected !== signature) {
+    if (expectedSignature !== signature) {
       return NextResponse.json(
-        { error: "Payment verification failed" },
+        { success: false, error: "Payment verification failed: Invalid signature." },
         { status: 400 }
       )
     }
-
+    
+    // --- Step 2: Database Updates ---
     const { db } = await connectToDatabase()
 
-    // Fetch order details
-    const order = await db.collection("orders").findOne({ orderId })
-    if (!order) {
-      return NextResponse.json({ error: "Order not found" }, { status: 404 })
-    }
-
-    // Update order status
+    // 1. Update Order status
     await db.collection("orders").updateOne(
-      { orderId },
+      { orderId, userId }, // Find order for this user
       {
         $set: {
           status: "verified",
@@ -58,28 +68,46 @@ export async function POST(request: NextRequest) {
 
     // Calculate subscription expiry
     const expiry = new Date()
-    if (order.plan === "monthly") expiry.setMonth(expiry.getMonth() + 1)
+    if (plan === "monthly") expiry.setMonth(expiry.getMonth() + 1)
     else expiry.setFullYear(expiry.getFullYear() + 1)
 
-    // Update user's subscription in the database
-    await db.collection("users").updateOne(
-      { _id: new ObjectId(session.user.id) },
+    // 2. Update user's subscription in the database
+    const updateResult = await db.collection("users").findOneAndUpdate(
+      { _id: new ObjectId(userId) },
       {
         $set: {
-          subscriptionPlan: order.plan,
+          subscriptionPlan: plan, // The field used in your database
           subscriptionExpiry: expiry,
           updatedAt: new Date(),
         },
-      }
+      },
+      { returnDocument: 'after' } // Get the updated document
     )
+    
+    // Ensure user update was successful
+    if (!updateResult.value) {
+        return NextResponse.json(
+            { success: false, error: "Payment verified, but failed to update user record." },
+            { status: 404 }
+        )
+    }
+
+    // Return the updated plan to the client for session update
+    const updatedUser = updateResult.value
+    const clientUser = {
+        id: updatedUser._id.toHexString(), 
+        name: updatedUser.name, // Assuming name and email are on the user object
+        email: updatedUser.email, 
+        plan: updatedUser.subscriptionPlan, // The updated plan
+    }
 
     return NextResponse.json({
       success: true,
-      message: "Payment verified",
-      plan: order.plan,
+      message: "Payment verified successfully",
+      user: clientUser,
     })
   } catch (error) {
     console.error("Verification error:", error)
-    return NextResponse.json({ error: "Verification failed" }, { status: 500 })
+    return NextResponse.json({ success: false, error: "Verification failed due to a server error" }, { status: 500 })
   }
 }
