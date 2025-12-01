@@ -5,9 +5,11 @@ import { authOptions } from "@/lib/auth-config"
 import JSZip from "jszip"
 import { TIER_LIMITS } from "@/lib/tier-limits"
 
-// NOTE: The 'config' export with 'api' properties is deprecated and ignored in the App Router.
-// We remove this block to resolve the runtime warning/error, allowing Next.js to handle the
-// streaming of the file upload via request.formData() correctly.
+// 🚀 FIX: Use supported App Router configuration exports to ensure the Node.js runtime
+// is used and the route is always dynamically executed. This is the correct mechanism
+// to handle resource-intensive tasks like large file processing in the App Router.
+export const runtime = 'nodejs' 
+export const dynamic = 'force-dynamic' 
 
 export async function POST(request: NextRequest) {
   try {
