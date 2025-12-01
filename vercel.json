@@ -1,15 +1,10 @@
 {
-  "version": 2,
-  "builds": [
-    { "src": "next.config.js", "use": "@vercel/next" }
-  ],
-  "routes": [
-    { "src": "/api/(.*)", "dest": "/api/$1" }
-  ],
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next",
   "env": {
+    "MONGODB_URI": "mongodb+srv://abhigandhi250_db_user:abhi@secure-drop.etjd769.mongodb.net/?appName=secure-drop",
+    "JWT_SECRET": "abhi",
     "RAZORPAY_KEY_ID": "rzp_live_RSbChCKHSLHY03",
-    "RAZORPAY_KEY_SECRET": "8J5x33vOUctUrVnB55lONJzl",
-    "NEXT_PUBLIC_RAZORPAY_KEY_ID": "rzp_live_RSbChCKHSLHY03",
-    "MONGODB_URI": "mongodb+srv://abhigandhi250_db_user:abhi@secure-drop.etjd769.mongodb.net/?appName=secure-drop&retryWrites=true&w=majority"
+    "RAZORPAY_KEY_SECRET": "8J5x33vOUctUrVnB55lONJzl"
   }
 }
