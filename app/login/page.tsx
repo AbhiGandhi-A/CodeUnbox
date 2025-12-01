@@ -1,73 +1,251 @@
-"use client"
+"use client";
 
-import type React from "react"
+import { useState, useEffect } from "react";
+import { toast } from "sonner";
+import styles from "..register/register.module.css";
+import { signIn } from "next-auth/react";
 
-import { signIn } from "next-auth/react"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
-import Link from "next/link"
-import styles from "./login.module.css"
+export default function AuthPage() {
+  const [mode, setMode] = useState<"register" | "login">("register");
+  const [isMounted, setIsMounted] = useState(false);
 
-export default function LoginPage() {
-  const router = useRouter()
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [error, setError] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
+  useEffect(() => setIsMounted(true), []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
-    setError("")
+  // REGISTER FORM DATA
+  const [registerData, setRegisterData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  // LOGIN FORM DATA
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
+
+  const [loading, setLoading] = useState(false);
+
+  // REGISTER submit
+  async function handleRegister(e: any) {
+    e.preventDefault();
+
+    // 1. Client-side Validation for Required Fields
+    if (!registerData.name || !registerData.email || !registerData.password) {
+      toast.error("Please fill in all required fields.");
+      return;
+    }
+
+    // 2. Password Match Check
+    if (registerData.password !== registerData.confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
+    // 3. Password Minimum Length Check
+    if (registerData.password.length < 8) {
+        toast.error("Password must be at least 8 characters long.");
+        return;
+    }
+
+    setLoading(true);
 
     try {
-      const result = await signIn("credentials", {
-        email,
-        password,
-        redirect: false,
-      })
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(registerData),
+      });
 
-      if (result?.error) {
-        setError(result.error)
-      } else {
-        router.push("/")
+      const data = await res.json();
+      
+      if (!res.ok) {
+        return toast.error(data.error || "Registration failed");
       }
+
+      toast.success("Account created! Please sign in.");
+      setMode("login"); // Auto switch to login page
+    } catch (error) {
+        console.error("Client registration error:", error);
+        toast.error("An unexpected error occurred during registration.");
     } finally {
-      setIsLoading(false)
+      setLoading(false);
     }
   }
 
+  // LOGIN submit
+  async function handleLogin(e: any) {
+    e.preventDefault();
+    setLoading(true);
+
+    const result = await signIn("credentials", {
+      email: loginEmail,
+      password: loginPassword,
+      redirect: false,
+    });
+
+    if (result?.error) {
+      // Handle specific NextAuth error and give generic feedback
+      if (result.error === "CredentialsSignin" || result.error === "Error") {
+        toast.error("Invalid email or password. Please try again.");
+      } else {
+        // Fallback for other errors (e.g., network issues)
+        toast.error(result.error);
+      }
+    } else {
+      window.location.href = "/";
+    }
+
+    setLoading(false);
+  }
+
+  if (!isMounted) return null;
+
   return (
     <div className={styles.container}>
-      <form className={styles.form} onSubmit={handleSubmit}>
-        <h1 className={styles.title}>Sign In</h1>
+      
+      {/* Animated background particles */}
+      <div className={styles.particle}></div>
+      <div className={styles.particle}></div>
+      <div className={styles.particle}></div>
+      <div className={styles.particle}></div>
+      <div className={styles.particle}></div>
 
-        {error && <div className={styles.error}>{error}</div>}
-
-        <div className={styles.formGroup}>
-          <label htmlFor="email">Email</label>
-          <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-        </div>
-
-        <div className={styles.formGroup}>
-          <label htmlFor="password">Password</label>
-          <input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-
-        <button type="submit" disabled={isLoading} className={styles.button}>
-          {isLoading ? "Signing in..." : "Sign In"}
-        </button>
-
-        <p className={styles.footer}>
-          Don't have an account? <Link href="/register">Sign up</Link>
+      {/* LEFT SIDE CONTENT (Desktop only) */}
+      <div className={styles.content}>
+        <h2>Build. Analyze. Share. Faster Than Ever.</h2>
+        <p>
+          Create your workspace account to upload ZIP projects, explore structured folders,
+          preview code instantly, share selective files using a secure PIN, and save your
+          workspaces in the cloud.
         </p>
-      </form>
+
+        <ul className={styles.featureList}>
+          <li>Instant ZIP Extraction & Preview</li>
+          <li>VS Code style folder explorer</li>
+          <li>Smart PIN-Based File Sharing</li>
+          <li>Save & continue projects anytime</li>
+          <li>Premium features with flexible plans</li>
+        </ul>
+
+        {/* Display the provided abstract image */}
+        
+
+[Image of a futuristic abstract digital interface showing data and connections]
+
+        <div className={styles.graphic}></div>
+      </div>
+
+      {/* RIGHT SIDE — BOTH FORMS STACKED */}
+      <div className={styles.formWrapper}>
+
+        {/* REGISTER FORM */}
+        <form
+          onSubmit={handleRegister}
+          className={`${styles.form} ${
+            mode === "register" ? styles.formActive : styles.formHiddenUp
+          }`}
+        >
+          <h1 className={styles.title}>Create Your Account</h1>
+
+          <div className={styles.formGroup}>
+            <label>Full Name</label>
+            <input
+              type="text"
+              required
+              value={registerData.name}
+              onChange={(e) =>
+                setRegisterData({ ...registerData, name: e.target.value })
+              }
+            />
+          </div>
+
+          <div className={styles.formGroup}>
+            <label>Email Address</label>
+            <input
+              type="email"
+              required
+              value={registerData.email}
+              onChange={(e) =>
+                setRegisterData({ ...registerData, email: e.target.value })
+              }
+            />
+          </div>
+
+          <div className={styles.formGroup}>
+            <label>Password</label>
+            <input
+              type="password"
+              required
+              value={registerData.password}
+              onChange={(e) =>
+                setRegisterData({ ...registerData, password: e.target.value })
+              }
+            />
+          </div>
+
+          <div className={styles.formGroup}>
+            <label>Confirm Password</label>
+            <input
+              type="password"
+              required
+              value={registerData.confirmPassword}
+              onChange={(e) =>
+                setRegisterData({
+                  ...registerData,
+                  confirmPassword: e.target.value,
+                })
+              }
+            />
+          </div>
+
+          <button className={styles.button} disabled={loading}>
+            {loading ? "Creating..." : "Sign Up"}
+          </button>
+
+          <p className={styles.footer}>
+            Already have an account?{" "}
+            <span onClick={() => setMode("login")}>Sign In</span>
+          </p>
+        </form>
+
+        {/* LOGIN FORM */}
+        <form
+          onSubmit={handleLogin}
+          className={`${styles.form} ${
+            mode === "login" ? styles.formActive : styles.formHiddenDown
+          }`}
+        >
+          <h1 className={styles.title}>Welcome Back</h1>
+
+          <div className={styles.formGroup}>
+            <label>Email</label>
+            <input
+              type="email"
+              required
+              value={loginEmail}
+              onChange={(e) => setLoginEmail(e.target.value)}
+            />
+          </div>
+
+          <div className={styles.formGroup}>
+            <label>Password</label>
+            <input
+              type="password"
+              required
+              value={loginPassword}
+              onChange={(e) => setLoginPassword(e.target.value)}
+            />
+          </div>
+
+          <button className={styles.button} disabled={loading}>
+            {loading ? "Signing in..." : "Sign In"}
+          </button>
+
+          <p className={styles.footer}>
+            New here? <span onClick={() => setMode("register")}>Create account</span>
+          </p>
+        </form>
+      </div>
     </div>
-  )
+  );
 }
