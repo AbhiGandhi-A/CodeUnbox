@@ -11,7 +11,7 @@ export function PricingNotice() {
       }}
     >
       <strong>Anonymous users:</strong> Max 100 files per ZIP, no individual file downloads.
-      <a href="/login" style={{ marginLeft: "8px", textDecoration: "underline" }}>
+      <a href="/register" style={{ marginLeft: "8px", textDecoration: "underline" }}>
         Sign in to unlock more features
       </a>
     </div>
