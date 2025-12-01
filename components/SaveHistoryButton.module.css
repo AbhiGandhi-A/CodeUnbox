@@ -1,0 +1,199 @@
+:root {
+  --bg-dark: #0d1117;
+  --bg-card: #111827;
+  --bg-hover: #1f2937;
+  --border: #1f2a37;
+  --text: #e5e7eb;
+  --text-secondary: #9ca3af;
+  --primary: #3b82f6;
+  --primary-dark: #2563eb;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+}
+
+/* ------------------------- */
+/*     TRIGGER BUTTON        */
+/* ------------------------- */
+
+.btn {
+  padding: 8px 16px;
+  background: var(--primary);
+  color: white;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.btn:hover {
+  background: var(--primary-dark);
+}
+
+/* ------------------------- */
+/*          MODAL            */
+/* ------------------------- */
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.modalContent {
+  background: var(--bg-card);
+  width: 95%;
+  max-width: 550px;
+  max-height: 85vh;
+  overflow-y: auto;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
+  animation: showModal 0.25s ease-out;
+}
+
+@keyframes showModal {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* ------------------------- */
+/*       MODAL HEADER        */
+/* ------------------------- */
+
+.modalHeader {
+  padding: 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modalHeader h2 {
+  margin: 0;
+  font-size: 18px;
+  color: var(--text);
+}
+
+.modalHeader button {
+  font-size: 26px;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.modalHeader button:hover {
+  color: white;
+}
+
+/* ------------------------- */
+/*        MODAL BODY         */
+/* ------------------------- */
+
+.modalBody {
+  padding: 20px;
+}
+
+.modalBody p {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+/* ------------------------- */
+/*        ZIP LIST           */
+/* ------------------------- */
+
+.zipList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.zipItem {
+  background: var(--bg-dark);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  margin-bottom: 10px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: 0.2s ease;
+}
+
+.zipItem:hover {
+  background: var(--bg-hover);
+}
+
+/* ------------------------- */
+/*        ZIP INFO           */
+/* ------------------------- */
+
+.zipInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.zipName {
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--text);
+}
+
+.zipMeta {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+/* ------------------------- */
+/*        ACTION BUTTONS     */
+/* ------------------------- */
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* DELETE BUTTON */
+
+.deleteBtn {
+  padding: 6px 12px;
+  background: transparent;
+  border: 1px solid #ef4444;
+  color: #ef4444;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.deleteBtn:hover {
+  background: #ef4444;
+  color: white;
+}
+
+/* USE BUTTON */
+
+.useBtn {
+  padding: 6px 14px;
+  background: var(--primary);
+  border: none;
+  color: white;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.useBtn:hover {
+  background: var(--primary-dark);
+}

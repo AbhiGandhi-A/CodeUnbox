@@ -1,0 +1,162 @@
+/* [project]/components/AccessSharedFiles.module.css [app-client] (css) */
+.AccessSharedFiles-module__bqgaga__modal {
+  z-index: 1000;
+  background-color: #00000080;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  position: fixed;
+  inset: 0;
+}
+
+.AccessSharedFiles-module__bqgaga__modalContent {
+  background-color: var(--color-background);
+  border-radius: var(--radius-lg);
+  width: 90%;
+  max-width: 500px;
+  max-height: 80vh;
+  overflow: auto;
+  box-shadow: 0 20px 25px -5px #0000001a;
+}
+
+.AccessSharedFiles-module__bqgaga__modalHeader {
+  border-bottom: 1px solid var(--color-border);
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  display: flex;
+}
+
+.AccessSharedFiles-module__bqgaga__modalHeader h2 {
+  color: var(--color-text);
+  margin: 0;
+  font-size: 18px;
+}
+
+.AccessSharedFiles-module__bqgaga__closeBtn {
+  cursor: pointer;
+  color: var(--color-text-secondary);
+  background: none;
+  border: none;
+  font-size: 24px;
+}
+
+.AccessSharedFiles-module__bqgaga__modalBody {
+  padding: 20px;
+}
+
+.AccessSharedFiles-module__bqgaga__label {
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  margin: 0 0 12px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.AccessSharedFiles-module__bqgaga__pinInput {
+  flex-direction: column;
+  gap: 16px;
+  display: flex;
+}
+
+.AccessSharedFiles-module__bqgaga__input {
+  letter-spacing: 4px;
+  text-align: center;
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  padding: 12px;
+  font-family: monospace;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.AccessSharedFiles-module__bqgaga__input:focus {
+  border-color: var(--color-primary);
+  outline: none;
+}
+
+.AccessSharedFiles-module__bqgaga__accessBtn {
+  background-color: var(--color-primary);
+  color: #fff;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  border: none;
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all .2s;
+}
+
+.AccessSharedFiles-module__bqgaga__accessBtn:hover:not(:disabled) {
+  background-color: var(--color-primary-dark);
+}
+
+.AccessSharedFiles-module__bqgaga__accessBtn:disabled {
+  opacity: .7;
+  cursor: not-allowed;
+}
+
+.AccessSharedFiles-module__bqgaga__filesDisplay {
+  flex-direction: column;
+  gap: 16px;
+  display: flex;
+}
+
+.AccessSharedFiles-module__bqgaga__fileList {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-md);
+  max-height: 250px;
+  padding: 12px;
+  overflow-y: auto;
+}
+
+.AccessSharedFiles-module__bqgaga__fileItem {
+  color: var(--color-text);
+  border-bottom: 1px solid var(--color-border);
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  font-size: 13px;
+  display: flex;
+}
+
+.AccessSharedFiles-module__bqgaga__fileItem:last-child {
+  border-bottom: none;
+}
+
+.AccessSharedFiles-module__bqgaga__downloadBtn {
+  background-color: var(--color-primary);
+  color: #fff;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  border: none;
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all .2s;
+}
+
+.AccessSharedFiles-module__bqgaga__downloadBtn:hover {
+  background-color: var(--color-primary-dark);
+}
+
+.AccessSharedFiles-module__bqgaga__newAccessBtn {
+  background-color: var(--color-surface);
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all .2s;
+}
+
+.AccessSharedFiles-module__bqgaga__newAccessBtn:hover {
+  background-color: var(--color-primary);
+  color: #fff;
+}
+
+/*# sourceMappingURL=components_AccessSharedFiles_module_css_bad6b30c._.single.css.map*/

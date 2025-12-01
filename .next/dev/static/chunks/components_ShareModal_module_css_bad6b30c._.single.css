@@ -1,0 +1,171 @@
+/* [project]/components/ShareModal.module.css [app-client] (css) */
+.ShareModal-module__8VmaJa__modal {
+  z-index: 1000;
+  background-color: #00000080;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  position: fixed;
+  inset: 0;
+}
+
+.ShareModal-module__8VmaJa__modalContent {
+  background-color: var(--color-background);
+  border-radius: var(--radius-lg);
+  width: 90%;
+  max-width: 500px;
+  max-height: 80vh;
+  overflow: auto;
+  box-shadow: 0 20px 25px -5px #0000001a;
+}
+
+.ShareModal-module__8VmaJa__modalHeader {
+  border-bottom: 1px solid var(--color-border);
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  display: flex;
+}
+
+.ShareModal-module__8VmaJa__modalHeader h2 {
+  color: var(--color-text);
+  margin: 0;
+  font-size: 18px;
+}
+
+.ShareModal-module__8VmaJa__closeBtn {
+  cursor: pointer;
+  color: var(--color-text-secondary);
+  background: none;
+  border: none;
+  font-size: 24px;
+}
+
+.ShareModal-module__8VmaJa__modalBody {
+  padding: 20px;
+}
+
+.ShareModal-module__8VmaJa__label {
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  margin: 0 0 12px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.ShareModal-module__8VmaJa__pinDisplay {
+  flex-direction: column;
+  gap: 16px;
+  display: flex;
+}
+
+.ShareModal-module__8VmaJa__pinBox {
+  background-color: var(--color-surface);
+  border: 2px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  display: flex;
+}
+
+.ShareModal-module__8VmaJa__pin {
+  color: var(--color-primary);
+  letter-spacing: 4px;
+  flex: 1;
+  font-family: monospace;
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.ShareModal-module__8VmaJa__copyBtn {
+  background-color: var(--color-primary);
+  color: #fff;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  white-space: nowrap;
+  border: none;
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  transition: background-color .2s;
+}
+
+.ShareModal-module__8VmaJa__copyBtn:hover {
+  background-color: var(--color-primary-dark);
+}
+
+.ShareModal-module__8VmaJa__info {
+  color: var(--color-text-secondary);
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.ShareModal-module__8VmaJa__newPinBtn {
+  background-color: var(--color-surface);
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all .2s;
+}
+
+.ShareModal-module__8VmaJa__newPinBtn:hover {
+  background-color: var(--color-primary);
+  color: #fff;
+}
+
+.ShareModal-module__8VmaJa__generateSection {
+  flex-direction: column;
+  gap: 16px;
+  display: flex;
+}
+
+.ShareModal-module__8VmaJa__fileList {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-md);
+  max-height: 200px;
+  padding: 12px;
+  overflow-y: auto;
+}
+
+.ShareModal-module__8VmaJa__fileItem {
+  color: var(--color-text-secondary);
+  border-bottom: 1px solid var(--color-border);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 8px 12px;
+  font-size: 13px;
+  overflow: hidden;
+}
+
+.ShareModal-module__8VmaJa__fileItem:last-child {
+  border-bottom: none;
+}
+
+.ShareModal-module__8VmaJa__generateBtn {
+  background-color: var(--color-primary);
+  color: #fff;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  border: none;
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all .2s;
+}
+
+.ShareModal-module__8VmaJa__generateBtn:hover:not(:disabled) {
+  background-color: var(--color-primary-dark);
+}
+
+.ShareModal-module__8VmaJa__generateBtn:disabled {
+  opacity: .7;
+  cursor: not-allowed;
+}
+
+/*# sourceMappingURL=components_ShareModal_module_css_bad6b30c._.single.css.map*/

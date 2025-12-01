@@ -1,0 +1,82 @@
+/* [project]/components/DownloadMenu.module.css [app-client] (css) */
+.DownloadMenu-module__obcEYa__downloadContainer {
+  gap: 8px;
+  display: flex;
+}
+
+.DownloadMenu-module__obcEYa__downloadBtn {
+  background-color: var(--color-primary);
+  color: #fff;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  white-space: nowrap;
+  border: none;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all .2s;
+}
+
+.DownloadMenu-module__obcEYa__downloadBtn:hover:not(:disabled) {
+  background-color: var(--color-primary-dark);
+  box-shadow: 0 4px 6px -1px #0000001a;
+}
+
+.DownloadMenu-module__obcEYa__downloadBtn:active:not(:disabled) {
+  transform: scale(.98);
+}
+
+.DownloadMenu-module__obcEYa__downloadBtn:disabled {
+  opacity: .7;
+  cursor: not-allowed;
+}
+
+.DownloadMenu-module__obcEYa__saveBtn {
+  background-color: var(--color-success);
+  color: #fff;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  white-space: nowrap;
+  border: none;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all .2s;
+}
+
+.DownloadMenu-module__obcEYa__saveBtn:hover:not(:disabled) {
+  background-color: var(--color-success-dark);
+  box-shadow: 0 4px 6px -1px #0000001a;
+}
+
+.DownloadMenu-module__obcEYa__saveBtn:active:not(:disabled) {
+  transform: scale(.98);
+}
+
+.DownloadMenu-module__obcEYa__saveBtn:disabled {
+  background-color: var(--color-text-secondary);
+  cursor: not-allowed;
+  opacity: .7;
+}
+
+.DownloadMenu-module__obcEYa__limitNotice {
+  color: var(--color-text-secondary);
+  align-items: center;
+  margin: 0;
+  padding: 0 8px;
+  font-size: 12px;
+  display: flex;
+}
+
+@media (max-width: 768px) {
+  .DownloadMenu-module__obcEYa__downloadContainer {
+    gap: 6px;
+  }
+
+  .DownloadMenu-module__obcEYa__downloadBtn, .DownloadMenu-module__obcEYa__saveBtn {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+}
+
+/*# sourceMappingURL=components_DownloadMenu_module_css_bad6b30c._.single.css.map*/

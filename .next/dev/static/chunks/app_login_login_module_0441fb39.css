@@ -1,0 +1,104 @@
+/* [project]/app/login/login.module.css [app-client] (css) */
+.login-module__Si-P0q__container {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  display: flex;
+}
+
+.login-module__Si-P0q__form {
+  background: #fff;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 400px;
+  padding: 40px;
+  box-shadow: 0 20px 60px #0000004d;
+}
+
+.login-module__Si-P0q__title {
+  text-align: center;
+  color: #1f2937;
+  margin: 0 0 24px;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.login-module__Si-P0q__error {
+  color: #991b1b;
+  background-color: #fee2e2;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  padding: 12px;
+  font-size: 14px;
+}
+
+.login-module__Si-P0q__formGroup {
+  margin-bottom: 20px;
+}
+
+.login-module__Si-P0q__formGroup label {
+  color: #1f2937;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  display: block;
+}
+
+.login-module__Si-P0q__formGroup input {
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  width: 100%;
+  padding: 10px 12px;
+  font-family: inherit;
+  font-size: 14px;
+  transition: border-color .2s;
+}
+
+.login-module__Si-P0q__formGroup input:focus {
+  border-color: #667eea;
+  outline: none;
+  box-shadow: 0 0 0 3px #667eea1a;
+}
+
+.login-module__Si-P0q__button {
+  color: #fff;
+  cursor: pointer;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 6px;
+  width: 100%;
+  margin-top: 16px;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  transition: transform .2s;
+}
+
+.login-module__Si-P0q__button:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+.login-module__Si-P0q__button:disabled {
+  opacity: .7;
+  cursor: not-allowed;
+}
+
+.login-module__Si-P0q__footer {
+  text-align: center;
+  color: #6b7280;
+  margin-top: 20px;
+  font-size: 14px;
+}
+
+.login-module__Si-P0q__footer a {
+  color: #667eea;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.login-module__Si-P0q__footer a:hover {
+  text-decoration: underline;
+}
+
+/*# sourceMappingURL=app_login_login_module_0441fb39.css.map*/

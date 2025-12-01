@@ -1,0 +1,21 @@
+[00:00:02.643] Server  LOG      ✓ Ready in 1625ms
+[00:00:05.679] Server  LOG      ○ Compiling /register ...
+[00:00:07.848] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[00:00:07.849] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/register","route":"/register"}
+[00:00:07.849] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/register color: rgb(120, 120, 120) color: inherit {"dp":"/register","o":"http://localhost:3000/register","sdkn":"@vercel/analytics/next","sdkv":"1.3.1","sv":"0.1.3","ts":1764608206787}
+[00:02:52.138] Server  ERROR   Login failed: User not found for email: "ABHIGANDHI918@GMAIL.COM"
+[00:02:52.146] Server  ERROR   C:\Users\abhig\Downloads\zip-explorer1\.next\dev\server\chunks\[root-of-the-server]__9bb2271e._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[00:02:52.176] Server  ERROR   C:\Users\abhig\Downloads\zip-explorer1\.next\dev\server\chunks\node_modules_next-auth_1810886e._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[00:02:52.223] Server  ERROR   C:\Users\abhig\Downloads\zip-explorer1\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.dev.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[00:02:52.277] Server  ERROR   C:\Users\abhig\Downloads\zip-explorer1\.next\dev\server\chunks\node_modules_next_f977eb13._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[00:02:52.291] Server  ERROR   C:\Users\abhig\Downloads\zip-explorer1\node_modules\next\dist\server\base-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[00:02:52.306] Server  ERROR   C:\Users\abhig\Downloads\zip-explorer1\node_modules\next\dist\server\next-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[00:02:52.326] Server  ERROR   C:\Users\abhig\Downloads\zip-explorer1\node_modules\next\dist\server\dev\next-dev-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[00:02:52.329] Server  ERROR   C:\Users\abhig\Downloads\zip-explorer1\node_modules\next\dist\trace\trace.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[00:02:52.337] Server  ERROR   C:\Users\abhig\Downloads\zip-explorer1\node_modules\next\dist\server\lib\router-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[00:02:52.341] Server  ERROR   C:\Users\abhig\Downloads\zip-explorer1\node_modules\next\dist\server\lib\start-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[00:02:52.344] Server  ERROR   Error during authorization: Error: Invalid credentials
+[00:03:35.020] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[00:03:35.020] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/","route":"/"}
+[00:03:35.020] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/ color: rgb(120, 120, 120) color: inherit {"dp":"/","o":"http://localhost:3000/","sdkn":"@vercel/analytics/next","sdkv":"1.3.1","sv":"0.1.3","ts":1764608413979}
+[00:08:24.344] Server  LOG      ✓ Compiled in 239ms

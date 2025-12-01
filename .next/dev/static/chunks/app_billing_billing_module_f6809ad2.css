@@ -1,0 +1,276 @@
+/* [project]/app/billing/billing.module.css [app-client] (css) */
+.billing-module__Nlsdbq__container {
+  background-color: var(--color-background);
+  min-height: 100vh;
+  display: flex;
+}
+
+.billing-module__Nlsdbq__sidebar {
+  background-color: var(--color-surface);
+  border-right: 1px solid var(--color-border);
+  flex-direction: column;
+  gap: 32px;
+  width: 280px;
+  padding: 24px;
+  display: flex;
+}
+
+.billing-module__Nlsdbq__userInfo {
+  text-align: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  display: flex;
+}
+
+.billing-module__Nlsdbq__avatar {
+  color: #fff;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50%;
+  justify-content: center;
+  align-items: center;
+  width: 80px;
+  height: 80px;
+  font-size: 32px;
+  font-weight: 700;
+  display: flex;
+}
+
+.billing-module__Nlsdbq__userDetails {
+  flex: 1;
+}
+
+.billing-module__Nlsdbq__userName {
+  color: var(--color-text);
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.billing-module__Nlsdbq__userEmail {
+  color: var(--color-text-secondary);
+  margin: 4px 0 0;
+  font-size: 13px;
+}
+
+.billing-module__Nlsdbq__nav {
+  flex-direction: column;
+  gap: 8px;
+  display: flex;
+}
+
+.billing-module__Nlsdbq__navItem {
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 12px 16px;
+  font-size: 14px;
+  text-decoration: none;
+  transition: all .2s;
+}
+
+.billing-module__Nlsdbq__navItem:hover {
+  background-color: var(--color-surface-secondary);
+  color: var(--color-text);
+}
+
+.billing-module__Nlsdbq__navItem.billing-module__Nlsdbq__active {
+  background-color: var(--color-primary);
+  color: #fff;
+}
+
+.billing-module__Nlsdbq__content {
+  flex: 1;
+  padding: 40px;
+}
+
+.billing-module__Nlsdbq__loading {
+  height: 100vh;
+  color: var(--color-text-secondary);
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+  display: flex;
+}
+
+.billing-module__Nlsdbq__title {
+  color: var(--color-text);
+  margin: 0 0 32px;
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.billing-module__Nlsdbq__currentPlan {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  margin-bottom: 40px;
+  padding: 20px;
+}
+
+.billing-module__Nlsdbq__label {
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  margin: 0;
+  font-size: 12px;
+}
+
+.billing-module__Nlsdbq__planName {
+  color: var(--color-primary);
+  margin: 8px 0 0;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.billing-module__Nlsdbq__plansGrid {
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  margin-bottom: 40px;
+  display: grid;
+}
+
+.billing-module__Nlsdbq__planCard {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  flex-direction: column;
+  gap: 20px;
+  padding: 24px;
+  transition: all .2s;
+  display: flex;
+}
+
+.billing-module__Nlsdbq__planCard:hover {
+  border-color: var(--color-primary);
+  box-shadow: 0 4px 12px #0000001a;
+}
+
+.billing-module__Nlsdbq__currentPlanCard {
+  border-color: var(--color-primary);
+  background: linear-gradient(135deg, #667eea0d 0%, #764ba20d 100%);
+}
+
+.billing-module__Nlsdbq__planCardTitle {
+  color: var(--color-text);
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.billing-module__Nlsdbq__priceSection {
+  align-items: baseline;
+  gap: 4px;
+  display: flex;
+}
+
+.billing-module__Nlsdbq__price {
+  color: var(--color-primary);
+  font-size: 36px;
+  font-weight: 700;
+}
+
+.billing-module__Nlsdbq__period {
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}
+
+.billing-module__Nlsdbq__featureList {
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+}
+
+.billing-module__Nlsdbq__featureItem {
+  color: var(--color-text-secondary);
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  display: flex;
+}
+
+.billing-module__Nlsdbq__upgradeBtn {
+  background-color: var(--color-primary);
+  color: #fff;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  border: none;
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all .2s;
+}
+
+.billing-module__Nlsdbq__upgradeBtn:hover:not(:disabled) {
+  background-color: var(--color-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px #0000001a;
+}
+
+.billing-module__Nlsdbq__upgradeBtn:disabled {
+  opacity: .7;
+  cursor: not-allowed;
+}
+
+.billing-module__Nlsdbq__faqSection {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+}
+
+.billing-module__Nlsdbq__faqSection h2 {
+  color: var(--color-text);
+  margin: 0 0 24px;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.billing-module__Nlsdbq__faqItem {
+  margin-bottom: 24px;
+}
+
+.billing-module__Nlsdbq__faqItem:last-child {
+  margin-bottom: 0;
+}
+
+.billing-module__Nlsdbq__faqItem h4 {
+  color: var(--color-text);
+  margin: 0 0 8px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.billing-module__Nlsdbq__faqItem p {
+  color: var(--color-text-secondary);
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+  .billing-module__Nlsdbq__container {
+    flex-direction: column;
+  }
+
+  .billing-module__Nlsdbq__sidebar {
+    border-right: none;
+    border-bottom: 1px solid var(--color-border);
+    width: 100%;
+  }
+
+  .billing-module__Nlsdbq__content {
+    padding: 20px;
+  }
+
+  .billing-module__Nlsdbq__plansGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/*# sourceMappingURL=app_billing_billing_module_f6809ad2.css.map*/

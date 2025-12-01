@@ -1,0 +1,175 @@
+/* [project]/components/SaveHistoryButton.module.css [app-client] (css) */
+:root {
+  --bg-dark: #0d1117;
+  --bg-card: #111827;
+  --bg-hover: #1f2937;
+  --border: #1f2a37;
+  --text: #e5e7eb;
+  --text-secondary: #9ca3af;
+  --primary: #3b82f6;
+  --primary-dark: #2563eb;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+}
+
+.SaveHistoryButton-module__7aqaaq__btn {
+  background: var(--primary);
+  color: #fff;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  border: none;
+  padding: 8px 16px;
+  font-size: 14px;
+  transition: all .2s;
+}
+
+.SaveHistoryButton-module__7aqaaq__btn:hover {
+  background: var(--primary-dark);
+}
+
+.SaveHistoryButton-module__7aqaaq__modal {
+  z-index: 999;
+  background: #000000a6;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  position: fixed;
+  inset: 0;
+}
+
+.SaveHistoryButton-module__7aqaaq__modalContent {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  width: 95%;
+  max-width: 550px;
+  max-height: 85vh;
+  animation: .25s ease-out SaveHistoryButton-module__7aqaaq__showModal;
+  overflow-y: auto;
+  box-shadow: 0 12px 35px #0006;
+}
+
+@keyframes SaveHistoryButton-module__7aqaaq__showModal {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.SaveHistoryButton-module__7aqaaq__modalHeader {
+  border-bottom: 1px solid var(--border);
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  display: flex;
+}
+
+.SaveHistoryButton-module__7aqaaq__modalHeader h2 {
+  color: var(--text);
+  margin: 0;
+  font-size: 18px;
+}
+
+.SaveHistoryButton-module__7aqaaq__modalHeader button {
+  color: var(--text-secondary);
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-size: 26px;
+}
+
+.SaveHistoryButton-module__7aqaaq__modalHeader button:hover {
+  color: #fff;
+}
+
+.SaveHistoryButton-module__7aqaaq__modalBody {
+  padding: 20px;
+}
+
+.SaveHistoryButton-module__7aqaaq__modalBody p {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.SaveHistoryButton-module__7aqaaq__zipList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.SaveHistoryButton-module__7aqaaq__zipItem {
+  background: var(--bg-dark);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  padding: 14px;
+  transition: all .2s;
+  display: flex;
+}
+
+.SaveHistoryButton-module__7aqaaq__zipItem:hover {
+  background: var(--bg-hover);
+}
+
+.SaveHistoryButton-module__7aqaaq__zipInfo {
+  flex-direction: column;
+  gap: 4px;
+  display: flex;
+}
+
+.SaveHistoryButton-module__7aqaaq__zipName {
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.SaveHistoryButton-module__7aqaaq__zipMeta {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.SaveHistoryButton-module__7aqaaq__actions {
+  align-items: center;
+  gap: 10px;
+  display: flex;
+}
+
+.SaveHistoryButton-module__7aqaaq__deleteBtn {
+  color: #ef4444;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  background: none;
+  border: 1px solid #ef4444;
+  padding: 6px 12px;
+  font-size: 13px;
+  transition: all .2s;
+}
+
+.SaveHistoryButton-module__7aqaaq__deleteBtn:hover {
+  color: #fff;
+  background: #ef4444;
+}
+
+.SaveHistoryButton-module__7aqaaq__useBtn {
+  background: var(--primary);
+  color: #fff;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  border: none;
+  padding: 6px 14px;
+  font-size: 13px;
+  transition: all .2s;
+}
+
+.SaveHistoryButton-module__7aqaaq__useBtn:hover {
+  background: var(--primary-dark);
+}
+
+/*# sourceMappingURL=components_SaveHistoryButton_module_css_bad6b30c._.single.css.map*/

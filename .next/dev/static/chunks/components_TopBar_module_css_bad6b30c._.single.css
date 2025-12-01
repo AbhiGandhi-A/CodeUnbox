@@ -1,0 +1,165 @@
+/* [project]/components/TopBar.module.css [app-client] (css) */
+.TopBar-module__dQ673a__topbar {
+  border-bottom: 1px solid var(--color-border);
+  background-color: var(--color-background);
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  height: 64px;
+  padding: 0 16px;
+  display: flex;
+}
+
+.TopBar-module__dQ673a__left {
+  align-items: center;
+  gap: 12px;
+  min-width: 200px;
+  display: flex;
+}
+
+.TopBar-module__dQ673a__logo {
+  border-radius: var(--radius-md);
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  transition: background-color .2s;
+  display: flex;
+}
+
+.TopBar-module__dQ673a__logo:hover {
+  background-color: var(--color-surface-secondary);
+}
+
+.TopBar-module__dQ673a__logo svg {
+  color: var(--color-primary);
+}
+
+.TopBar-module__dQ673a__title {
+  color: var(--color-text);
+  white-space: nowrap;
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.TopBar-module__dQ673a__middle {
+  flex: 1;
+  min-width: 200px;
+}
+
+.TopBar-module__dQ673a__right {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  display: flex;
+}
+
+.TopBar-module__dQ673a__stats {
+  background-color: var(--color-surface-secondary);
+  border-radius: var(--radius-md);
+  white-space: nowrap;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  font-size: 13px;
+  display: flex;
+}
+
+.TopBar-module__dQ673a__label {
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+.TopBar-module__dQ673a__value {
+  color: var(--color-primary);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.TopBar-module__dQ673a__shareBtn, .TopBar-module__dQ673a__accessBtn {
+  background-color: var(--color-primary);
+  color: #fff;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  white-space: nowrap;
+  border: none;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all .2s;
+}
+
+.TopBar-module__dQ673a__shareBtn:hover, .TopBar-module__dQ673a__accessBtn:hover {
+  background-color: var(--color-primary-dark);
+  box-shadow: 0 4px 6px -1px #0000001a;
+}
+
+.TopBar-module__dQ673a__shareBtn:active, .TopBar-module__dQ673a__accessBtn:active {
+  transform: scale(.98);
+}
+
+.TopBar-module__dQ673a__saveBtn {
+  background-color: var(--color-success);
+  color: #fff;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  white-space: nowrap;
+  border: none;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all .2s;
+}
+
+.TopBar-module__dQ673a__saveBtn:hover {
+  background-color: var(--color-success-dark);
+  box-shadow: 0 4px 6px -1px #0000001a;
+}
+
+.TopBar-module__dQ673a__saveBtn:active {
+  transform: scale(.98);
+}
+
+.TopBar-module__dQ673a__saveBtn:disabled {
+  background-color: var(--color-text-secondary);
+  cursor: not-allowed;
+  opacity: .7;
+}
+
+@media (max-width: 768px) {
+  .TopBar-module__dQ673a__topbar {
+    flex-wrap: wrap;
+    gap: 12px;
+    height: auto;
+    padding: 12px 16px;
+  }
+
+  .TopBar-module__dQ673a__left {
+    order: 1;
+    min-width: 100%;
+  }
+
+  .TopBar-module__dQ673a__middle {
+    order: 2;
+    min-width: 100%;
+  }
+
+  .TopBar-module__dQ673a__right {
+    order: 3;
+    gap: 6px;
+    min-width: 100%;
+  }
+
+  .TopBar-module__dQ673a__title {
+    display: none;
+  }
+
+  .TopBar-module__dQ673a__shareBtn, .TopBar-module__dQ673a__accessBtn, .TopBar-module__dQ673a__saveBtn {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+}
+
+/*# sourceMappingURL=components_TopBar_module_css_bad6b30c._.single.css.map*/

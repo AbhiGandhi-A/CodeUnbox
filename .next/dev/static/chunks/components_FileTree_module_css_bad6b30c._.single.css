@@ -1,0 +1,122 @@
+/* [project]/components/FileTree.module.css [app-client] (css) */
+.FileTree-module__b3B1pW__container {
+  flex: 1;
+  padding: 8px 0;
+  font-size: 14px;
+  overflow-y: auto;
+}
+
+.FileTree-module__b3B1pW__nodeWrapper {
+  -webkit-user-select: none;
+  user-select: none;
+  flex-direction: column;
+  display: flex;
+  position: relative;
+}
+
+.FileTree-module__b3B1pW__nodeContent {
+  cursor: pointer;
+  border-radius: 4px;
+  align-items: center;
+  width: 100%;
+  height: 28px;
+  padding-right: 8px;
+  transition: background-color .15s;
+  display: flex;
+}
+
+.FileTree-module__b3B1pW__nodeContent:hover {
+  background-color: var(--color-surface-secondary);
+}
+
+.FileTree-module__b3B1pW__indentationLine {
+  background-color: var(--color-border);
+  opacity: .5;
+  width: 1px;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.FileTree-module__b3B1pW__toggle {
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+  color: var(--color-text-secondary);
+  background: none;
+  border: none;
+  justify-content: center;
+  align-items: center;
+  margin-right: 4px;
+  padding: 0;
+  display: flex;
+}
+
+.FileTree-module__b3B1pW__toggleIcon {
+  width: 8px;
+  height: 8px;
+  transition: transform .2s;
+  transform: rotate(90deg);
+}
+
+.FileTree-module__b3B1pW__toggleIcon.FileTree-module__b3B1pW__expanded {
+  transform: rotate(180deg);
+}
+
+.FileTree-module__b3B1pW__checkboxWrapper {
+  justify-content: center;
+  align-items: center;
+  width: 16px;
+  height: 16px;
+  margin-right: 4px;
+  display: flex;
+}
+
+.FileTree-module__b3B1pW__checkbox {
+  cursor: pointer;
+  width: 14px;
+  height: 14px;
+  accent-color: var(--color-primary);
+}
+
+.FileTree-module__b3B1pW__label {
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  display: flex;
+  overflow: hidden;
+}
+
+.FileTree-module__b3B1pW__fileLabel {
+  color: var(--color-text-secondary);
+}
+
+.FileTree-module__b3B1pW__fileLabel.FileTree-module__b3B1pW__selected {
+  background-color: var(--color-primary-low-opacity);
+  color: var(--color-primary);
+  font-weight: 500;
+}
+
+.FileTree-module__b3B1pW__folderLabel {
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+.FileTree-module__b3B1pW__name {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.FileTree-module__b3B1pW__children {
+  flex-direction: column;
+  display: flex;
+}
+
+/*# sourceMappingURL=components_FileTree_module_css_bad6b30c._.single.css.map*/

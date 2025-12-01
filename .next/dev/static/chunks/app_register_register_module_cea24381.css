@@ -1,0 +1,310 @@
+/* [project]/app/register/register.module.css [app-client] (css) */
+@keyframes register-module__B3synq__blobMorph {
+  0% {
+    transform: translate(0)scale(1)rotate(0);
+  }
+
+  25% {
+    transform: translate(-80px, 60px)scale(1.15)rotate(20deg);
+  }
+
+  50% {
+    transform: translate(100px, -80px)scale(.9)rotate(-15deg);
+  }
+
+  75% {
+    transform: translate(-50px, -40px)scale(1.1)rotate(10deg);
+  }
+
+  100% {
+    transform: translate(0)scale(1)rotate(0);
+  }
+}
+
+@keyframes register-module__B3synq__floatParticle {
+  0% {
+    opacity: .5;
+    transform: translateY(0)scale(1);
+  }
+
+  50% {
+    opacity: .9;
+    transform: translateY(-45px)scale(1.15);
+  }
+
+  100% {
+    opacity: .5;
+    transform: translateY(0)scale(1);
+  }
+}
+
+@keyframes register-module__B3synq__fadeInSlow {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.register-module__B3synq__container {
+  background: linear-gradient(145deg, #5426c5 0%, #6f2de5 100%);
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 40px;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+}
+
+@media (min-width: 1024px) {
+  .register-module__B3synq__container {
+    grid-template-columns: 1.2fr .9fr;
+    gap: 60px;
+    padding: 0 120px;
+    display: grid;
+  }
+}
+
+.register-module__B3synq__container:before, .register-module__B3synq__container:after {
+  content: "";
+  filter: blur(160px);
+  opacity: .55;
+  z-index: -1;
+  border-radius: 50%;
+  width: 600px;
+  height: 600px;
+  position: absolute;
+}
+
+.register-module__B3synq__container:before {
+  background: #8b5cf6;
+  animation: 22s ease-in-out infinite register-module__B3synq__blobMorph;
+  top: -150px;
+  left: -200px;
+}
+
+.register-module__B3synq__container:after {
+  background: #a855f7;
+  animation: 30s ease-in-out infinite reverse register-module__B3synq__blobMorph;
+  bottom: -200px;
+  right: -150px;
+}
+
+.register-module__B3synq__particle {
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+  background: #ffffff20;
+  border-radius: 50%;
+  width: 14px;
+  height: 14px;
+  animation: 6s ease-in-out infinite register-module__B3synq__floatParticle;
+  position: absolute;
+}
+
+.register-module__B3synq__particle:first-child {
+  top: 18%;
+  left: 15%;
+}
+
+.register-module__B3synq__particle:nth-child(2) {
+  animation-delay: 1s;
+  top: 58%;
+  left: 28%;
+}
+
+.register-module__B3synq__particle:nth-child(3) {
+  animation-delay: 2s;
+  top: 42%;
+  left: 76%;
+}
+
+.register-module__B3synq__particle:nth-child(4) {
+  animation-delay: 3s;
+  top: 82%;
+  left: 45%;
+}
+
+.register-module__B3synq__particle:nth-child(5) {
+  animation-delay: 4s;
+  top: 28%;
+  left: 58%;
+}
+
+.register-module__B3synq__content {
+  color: #fff;
+  animation: .9s ease-out register-module__B3synq__fadeInSlow;
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .register-module__B3synq__content {
+    display: block;
+  }
+}
+
+.register-module__B3synq__content h2 {
+  margin-bottom: 18px;
+  font-size: 46px;
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.register-module__B3synq__content p {
+  opacity: .9;
+  margin-bottom: 28px;
+  font-size: 18px;
+}
+
+.register-module__B3synq__featureList {
+  padding: 0;
+  list-style: none;
+}
+
+.register-module__B3synq__featureList li {
+  align-items: center;
+  margin-bottom: 14px;
+  font-size: 16px;
+  display: flex;
+}
+
+.register-module__B3synq__featureList li:before {
+  content: "🚀";
+  margin-right: 14px;
+  font-size: 18px;
+}
+
+.register-module__B3synq__graphic {
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  background: #ffffff1f;
+  border-radius: 14px;
+  width: 100%;
+  height: 220px;
+  margin-top: 50px;
+  box-shadow: 0 10px 25px #0000004d;
+}
+
+.register-module__B3synq__formWrapper {
+  width: 100%;
+  max-width: 430px;
+  min-height: 620px;
+  position: relative;
+  overflow: visible;
+}
+
+.register-module__B3synq__form {
+  opacity: 0;
+  pointer-events: none;
+  background: #fff;
+  border-radius: 16px;
+  width: 100%;
+  padding: 42px;
+  transition: all .6s;
+  position: absolute;
+  transform: translateY(100px);
+  box-shadow: 0 20px 55px #00000040, 0 0 25px #7c3aed33;
+}
+
+.register-module__B3synq__formActive {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.register-module__B3synq__formHiddenUp {
+  opacity: 0;
+  transform: translateY(-120px);
+}
+
+.register-module__B3synq__formHiddenDown {
+  opacity: 0;
+  transform: translateY(120px);
+}
+
+.register-module__B3synq__title {
+  text-align: center;
+  margin-bottom: 26px;
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.register-module__B3synq__formGroup {
+  margin-bottom: 18px;
+}
+
+.register-module__B3synq__formGroup label {
+  color: #1f2937;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  display: block;
+}
+
+.register-module__B3synq__formGroup input {
+  color: #111;
+  background: #fff;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 15px;
+  transition: border .25s;
+}
+
+.register-module__B3synq__formGroup input::placeholder {
+  color: #9ca3af;
+}
+
+.register-module__B3synq__formGroup input:focus {
+  border-color: #7c3aed;
+  outline: none;
+  box-shadow: 0 0 0 4px #7c3aed40;
+}
+
+.register-module__B3synq__button {
+  color: #fff;
+  cursor: pointer;
+  background: #7c3aed;
+  border-radius: 10px;
+  width: 100%;
+  margin-top: 10px;
+  padding: 13px;
+  font-size: 16px;
+  font-weight: 600;
+  transition: all .25s;
+  box-shadow: 0 8px 18px #7c3aed66;
+}
+
+.register-module__B3synq__button:hover:not(:disabled) {
+  background: #5b21b6;
+  transform: translateY(-3px);
+}
+
+.register-module__B3synq__button:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+}
+
+.register-module__B3synq__footer {
+  text-align: center;
+  color: #4b5563;
+  margin-top: 18px;
+  font-size: 14px;
+}
+
+.register-module__B3synq__footer span {
+  color: #7c3aed;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.register-module__B3synq__footer span:hover {
+  text-decoration: underline;
+}
+
+/*# sourceMappingURL=app_register_register_module_cea24381.css.map*/

@@ -1,0 +1,83 @@
+.downloadContainer {
+  display: flex;
+  gap: 8px;
+}
+
+.downloadBtn {
+  padding: 8px 16px;
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.downloadBtn:hover:not(:disabled) {
+  background-color: var(--color-primary-dark);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.downloadBtn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.downloadBtn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* --- NEW: Save ZIP Button Styles --- */
+.saveBtn {
+  padding: 8px 16px;
+  /* Using a distinct, positive color for saving */
+  background-color: var(--color-success); 
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.saveBtn:hover:not(:disabled) {
+  background-color: var(--color-success-dark);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.saveBtn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.saveBtn:disabled {
+  background-color: var(--color-text-secondary); /* Grey out when saving */
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+/* --- END NEW: Save ZIP Button Styles --- */
+
+.limitNotice {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  margin: 0;
+  padding: 0 8px;
+  display: flex;
+  align-items: center;
+}
+
+/* Media query adjustment for smaller screens */
+@media (max-width: 768px) {
+  .downloadContainer {
+    gap: 6px;
+  }
+  .downloadBtn,
+  .saveBtn {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+}

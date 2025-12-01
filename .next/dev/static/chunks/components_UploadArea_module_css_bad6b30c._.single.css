@@ -1,0 +1,64 @@
+/* [project]/components/UploadArea.module.css [app-client] (css) */
+.UploadArea-module__IZzUWW__container {
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px;
+  display: flex;
+}
+
+.UploadArea-module__IZzUWW__button {
+  background-color: var(--color-primary);
+  color: #fff;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  white-space: nowrap;
+  border: none;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all .2s;
+  display: flex;
+}
+
+.UploadArea-module__IZzUWW__button:hover:not(:disabled) {
+  background-color: var(--color-primary-dark);
+  box-shadow: var(--shadow-md);
+}
+
+.UploadArea-module__IZzUWW__button:active:not(:disabled) {
+  transform: scale(.98);
+}
+
+.UploadArea-module__IZzUWW__button:disabled {
+  opacity: .7;
+  cursor: not-allowed;
+}
+
+.UploadArea-module__IZzUWW__button svg {
+  stroke-width: 2px;
+  width: 20px;
+  height: 20px;
+}
+
+.UploadArea-module__IZzUWW__spinner {
+  border: 2px solid #ffffff4d;
+  border-top-color: #fff;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  animation: .6s linear infinite UploadArea-module__IZzUWW__spin;
+}
+
+@keyframes UploadArea-module__IZzUWW__spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.UploadArea-module__IZzUWW__container.UploadArea-module__IZzUWW__loading {
+  opacity: .7;
+}
+
+/*# sourceMappingURL=components_UploadArea_module_css_bad6b30c._.single.css.map*/

@@ -1,0 +1,73 @@
+.userMenu {
+  position: relative;
+}
+
+.userBtn {
+  padding: 8px 16px;
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  white-space: nowrap;
+}
+
+.userBtn:hover {
+  background-color: var(--color-primary-dark);
+}
+
+.dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  margin-top: 8px;
+  min-width: 150px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+}
+
+.menuItem {
+  display: block;
+  width: 100%;
+  padding: 12px 16px;
+  background: none;
+  border: none;
+  text-align: left;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.menuItem:hover {
+  background-color: var(--color-surface-secondary);
+}
+
+.menuItem:first-child {
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+}
+
+.menuItem:last-child {
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+}
+
+.loginBtn {
+  padding: 8px 16px;
+  background-color: var(--color-primary);
+  color: white;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.loginBtn:hover {
+  background-color: var(--color-primary-dark);
+}

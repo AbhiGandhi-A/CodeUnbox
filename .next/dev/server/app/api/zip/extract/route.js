@@ -1,0 +1,12 @@
+var R=require("../../../../chunks/[turbopack]_runtime.js")("server/app/api/zip/extract/route.js")
+R.c("server/chunks/node_modules_next_d2c29465._.js")
+R.c("server/chunks/node_modules_next-auth_72b3a499._.js")
+R.c("server/chunks/node_modules_openid-client_d15f72b3._.js")
+R.c("server/chunks/node_modules_jose_dist_node_cjs_bd88468e._.js")
+R.c("server/chunks/node_modules_jszip_lib_bd6479a5._.js")
+R.c("server/chunks/node_modules_pako_5efc97ef._.js")
+R.c("server/chunks/node_modules_df53c41f._.js")
+R.c("server/chunks/[root-of-the-server]__9edcd5e3._.js")
+R.c("server/chunks/_next-internal_server_app_api_zip_extract_route_actions_dde3cf62.js")
+R.m("[project]/node_modules/next/dist/esm/build/templates/app-route.js { INNER_APP_ROUTE => \"[project]/app/api/zip/extract/route.ts [app-route] (ecmascript)\" } [app-route] (ecmascript)")
+module.exports=R.m("[project]/node_modules/next/dist/esm/build/templates/app-route.js { INNER_APP_ROUTE => \"[project]/app/api/zip/extract/route.ts [app-route] (ecmascript)\" } [app-route] (ecmascript)").exports

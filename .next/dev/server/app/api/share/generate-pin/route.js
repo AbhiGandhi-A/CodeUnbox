@@ -1,0 +1,10 @@
+var R=require("../../../../chunks/[turbopack]_runtime.js")("server/app/api/share/generate-pin/route.js")
+R.c("server/chunks/node_modules_next_a66e4db5._.js")
+R.c("server/chunks/node_modules_next-auth_72b3a499._.js")
+R.c("server/chunks/node_modules_openid-client_d15f72b3._.js")
+R.c("server/chunks/node_modules_jose_dist_node_cjs_bd88468e._.js")
+R.c("server/chunks/node_modules_c697dc78._.js")
+R.c("server/chunks/[root-of-the-server]__55ddcccd._.js")
+R.c("server/chunks/_next-internal_server_app_api_share_generate-pin_route_actions_67ac75ef.js")
+R.m("[project]/node_modules/next/dist/esm/build/templates/app-route.js { INNER_APP_ROUTE => \"[project]/app/api/share/generate-pin/route.ts [app-route] (ecmascript)\" } [app-route] (ecmascript)")
+module.exports=R.m("[project]/node_modules/next/dist/esm/build/templates/app-route.js { INNER_APP_ROUTE => \"[project]/app/api/share/generate-pin/route.ts [app-route] (ecmascript)\" } [app-route] (ecmascript)").exports

@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 1, "column": 0}, "map": {"version":3,"sources":["turbopack:///[project]/components/UploadArea.module.css"],"sourcesContent":[".container {\n  display: flex;\n  align-items: center;\n  gap: 12px;\n  padding: 0 16px;\n}\n\n.button {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  padding: 8px 16px;\n  background-color: var(--color-primary);\n  color: white;\n  border: none;\n  border-radius: var(--radius-md);\n  font-size: 14px;\n  font-weight: 500;\n  cursor: pointer;\n  transition: all 0.2s ease;\n  white-space: nowrap;\n}\n\n.button:hover:not(:disabled) {\n  background-color: var(--color-primary-dark);\n  box-shadow: var(--shadow-md);\n}\n\n.button:active:not(:disabled) {\n  transform: scale(0.98);\n}\n\n.button:disabled {\n  opacity: 0.7;\n  cursor: not-allowed;\n}\n\n.button svg {\n  width: 20px;\n  height: 20px;\n  stroke-width: 2;\n}\n\n.spinner {\n  width: 16px;\n  height: 16px;\n  border: 2px solid rgba(255, 255, 255, 0.3);\n  border-top-color: white;\n  border-radius: 50%;\n  animation: spin 0.6s linear infinite;\n}\n\n@keyframes spin {\n  to {\n    transform: rotate(360deg);\n  }\n}\n\n.container.loading {\n  opacity: 0.7;\n}\n"],"names":[],"mappings":"AAAA;;;;;;;AAOA;;;;;;;;;;;;;;;;AAgBA;;;;;AAKA;;;;AAIA;;;;;AAKA;;;;;;AAMA;;;;;;;;;AASA;;;;;;AAMA"}}]
+}

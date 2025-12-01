@@ -1,0 +1,140 @@
+/* FileTree.module.css */
+
+.container {
+  overflow-y: auto;
+  font-size: 14px;
+  flex: 1;
+  padding: 8px 0;
+  /* Add overall padding */
+}
+
+/* Base node styles */
+.nodeWrapper {
+  display: flex;
+  flex-direction: column;
+  user-select: none;
+  position: relative;
+  /* Needed for the indentation line */
+}
+
+/* Content area for alignment and hover */
+.nodeContent {
+  display: flex;
+  align-items: center;
+  height: 28px;
+  /* Slightly reduced height */
+  cursor: pointer;
+  padding-right: 8px;
+  /* Consistent right padding */
+  border-radius: 4px;
+  transition: background-color 0.15s ease;
+  width: 100%;
+}
+
+.nodeContent:hover {
+  background-color: var(--color-surface-secondary);
+}
+
+/* Indentation line styling */
+.indentationLine {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 1px;
+  background-color: var(--color-border);
+  /* Use a light border color */
+  opacity: 0.5;
+}
+
+/* Toggle button for folder expansion */
+.toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  /* Smaller toggle */
+  height: 16px;
+  margin-right: 4px;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text-secondary);
+}
+
+.toggleIcon {
+  transition: transform 0.2s ease;
+  transform: rotate(90deg);
+  /* Start pointing right */
+  width: 8px;
+  height: 8px;
+}
+
+.toggleIcon.expanded {
+  transform: rotate(180deg);
+  /* Pointing down when expanded */
+}
+
+/* Checkbox area (for files) */
+.checkboxWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  margin-right: 4px;
+}
+
+.checkbox {
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
+  accent-color: var(--color-primary);
+}
+
+/* Label containing icon and name */
+.label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  /* Smaller gap */
+  flex: 1;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  font-size: 13px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* File specific styling */
+.fileLabel {
+  color: var(--color-text-secondary);
+}
+
+.fileLabel.selected {
+  background-color: var(--color-primary-low-opacity);
+  /* Highlight background */
+  color: var(--color-primary);
+  font-weight: 500;
+}
+
+/* Folder specific styling */
+.folderLabel {
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Children container */
+.children {
+  display: flex;
+  flex-direction: column;
+  /* No direct padding here, indentation is added via inline style on nodeWrapper */
+}

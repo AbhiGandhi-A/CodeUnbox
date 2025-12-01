@@ -1,0 +1,172 @@
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--color-border);
+  background-color: var(--color-background);
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 200px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  transition: background-color 0.2s ease;
+}
+
+.logo:hover {
+  background-color: var(--color-surface-secondary);
+}
+
+.logo svg {
+  color: var(--color-primary);
+}
+
+.title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0;
+  white-space: nowrap;
+}
+
+.middle {
+  flex: 1;
+  min-width: 200px;
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.stats {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background-color: var(--color-surface-secondary);
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.label {
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+.value {
+  color: var(--color-primary);
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* Base styles for Share and Access buttons */
+.shareBtn,
+.accessBtn {
+  padding: 8px 16px;
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.shareBtn:hover,
+.accessBtn:hover {
+  background-color: var(--color-primary-dark);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.shareBtn:active,
+.accessBtn:active {
+  transform: scale(0.98);
+}
+
+/* --- NEW: Save Button Styles --- */
+.saveBtn {
+  padding: 8px 16px;
+  /* Use a secondary color that stands out but isn't primary/destructive */
+  background-color: var(--color-success); 
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.saveBtn:hover {
+  background-color: var(--color-success-dark);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.saveBtn:active {
+  transform: scale(0.98);
+}
+
+.saveBtn:disabled {
+  background-color: var(--color-text-secondary); /* Grey out when saving */
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+/* --- END NEW: Save Button Styles --- */
+
+
+@media (max-width: 768px) {
+  .topbar {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 12px 16px;
+    gap: 12px;
+  }
+
+  .left {
+    min-width: 100%;
+    order: 1;
+  }
+
+  .middle {
+    min-width: 100%;
+    order: 2;
+  }
+
+  .right {
+    min-width: 100%;
+    order: 3;
+    gap: 6px;
+  }
+
+  .title {
+    display: none;
+  }
+
+  .shareBtn,
+  .accessBtn,
+  .saveBtn { /* Apply smaller padding to the new button as well */
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+}
