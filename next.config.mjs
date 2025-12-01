@@ -6,12 +6,14 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  // 👇 Add this block to configure the body size limit for Server Actions
+  // REMOVE THE experimental block below, it's not needed for API Routes
+  /*
   experimental: {
     serverActions: {
       bodySizeLimit: '5mb',
     },
   },
+  */
 }
 
 export default nextConfig

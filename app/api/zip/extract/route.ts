@@ -5,11 +5,16 @@ import { authOptions } from "@/lib/auth-config"
 import JSZip from "jszip"
 import { TIER_LIMITS } from "@/lib/tier-limits"
 
+// NOTE: The 'config' export with 'api' properties is deprecated and ignored in the App Router.
+// We remove this block to resolve the runtime warning/error, allowing Next.js to handle the
+// streaming of the file upload via request.formData() correctly.
+
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
-    const userTier = session ? "free" : "anonymous"
-    const limits = TIER_LIMITS[userTier]
+    // Note: Assuming 'free' tier for session-less users, should be 'anonymous' if no session.
+    const userTier = session?.user?.subscriptionPlan || "anonymous" 
+    const limits = TIER_LIMITS[userTier as keyof typeof TIER_LIMITS]
 
     const formData = await request.formData()
     const file = formData.get("file") as File
@@ -17,6 +22,13 @@ export async function POST(request: NextRequest) {
     if (!file || !file.name.endsWith(".zip")) {
       return NextResponse.json({ error: "Only .zip files are supported" }, { status: 400 })
     }
+    
+    // Check file size limit (application logic check)
+    // We rely on request.formData() streaming but keep this check for user feedback.
+    if (file.size > 25 * 1024 * 1024) { // 25MB limit check inside the application logic
+      return NextResponse.json({ error: "File size exceeds 25MB limit." }, { status: 413 })
+    }
+
 
     const buffer = await file.arrayBuffer()
     const zip = new JSZip()
@@ -26,6 +38,7 @@ export async function POST(request: NextRequest) {
     let fileCount = 0
 
     zip.forEach((relativePath, zipEntry) => {
+      // Exclude hidden files and directories (starting with '.')
       if (!relativePath.startsWith(".") && !relativePath.includes("/.")) {
         fileEntries.push({
           path: relativePath,
@@ -35,7 +48,7 @@ export async function POST(request: NextRequest) {
       }
     })
 
-    // Check file limit
+    // Check file count limit
     if (fileCount > limits.maxFilesPerZip) {
       return NextResponse.json(
         {
@@ -46,7 +59,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Store session data
-    const sessionId = Math.random().toString(36).substring(2, 11)
+    // Use a robust way to generate a unique session ID
+    const sessionId = `zip-session-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`
     const { db } = await connectToDatabase()
 
     const sessionData = {
@@ -64,16 +78,19 @@ export async function POST(request: NextRequest) {
         try {
           const zipEntry = zip.file(entry.path)
           if (zipEntry) {
-            const content = await zipEntry.async("string")
+            // Using 'text' if possible for better encoding compatibility
+            const content = await zipEntry.async("text")
             sessionData.files.set(entry.path, content)
           }
         } catch (err) {
           console.error(`Failed to read ${entry.path}:`, err)
+          // Handle files that cannot be read as text (e.g., binaries) by skipping them or giving an empty string.
+          sessionData.files.set(entry.path, "")
         }
       }
     }
 
-    // Store in Redis-like session (in production, use Redis)
+    // Store in database
     await db.collection("sessions").insertOne({
       sessionId,
       files: Object.fromEntries(sessionData.files),

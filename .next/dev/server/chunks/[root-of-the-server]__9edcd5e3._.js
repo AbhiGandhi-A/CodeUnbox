@@ -185,7 +185,6 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$bcryptjs$2f$
 ;
 ;
 const authOptions = {
-    // Use session strategy based on JWT (standard for stateless serverless functions)
     session: {
         strategy: "jwt"
     },
@@ -202,32 +201,32 @@ const authOptions = {
                     type: "password"
                 }
             },
-            // Explicitly define the return type as User | null (using the globally extended type)
             async authorize (credentials) {
                 if (!credentials) {
                     return null;
                 }
-                const { email, password } = credentials;
+                // 🌟 FIX: Normalize incoming login email to lowercase
+                const email = String(credentials.email).toLowerCase();
+                const { password } = credentials;
                 try {
                     const { db } = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$mongodb$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["connectToDatabase"])();
+                    // Search using the normalized lowercase email
                     const user = await db.collection("users").findOne({
                         email
                     });
                     if (!user) {
-                        console.error("Login failed: User not found for email:", email);
+                        console.error("LOGIN FAIL: User not found for email:", email);
                         throw new Error("Invalid credentials");
                     }
                     const isValid = await __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$bcryptjs$2f$index$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["default"].compare(password, user.password);
                     if (!isValid) {
-                        console.error("Login failed: Invalid password for email:", email);
+                        console.error("LOGIN FAIL: Invalid password for email:", email);
                         throw new Error("Invalid credentials");
                     }
-                    // Return an object that matches the ExtendedUser interface structure.
                     return {
                         id: user._id.toString(),
                         name: user.name,
                         email: user.email,
-                        // 💡 FIX 4: Use 'subscriptionPlan' instead of 'tier'
                         subscriptionPlan: user.subscriptionPlan || "free"
                     };
                 } catch (e) {
@@ -237,33 +236,26 @@ const authOptions = {
             }
         })
     ],
-    // Custom pages configuration to handle redirects
     pages: {
-        signIn: "/login",
-        error: "/login"
+        signIn: "/register",
+        error: "/register"
     },
     callbacks: {
-        // Add custom properties (id, subscriptionPlan) to the JWT
         async jwt ({ token, user, trigger, session }) {
             if (user) {
                 token.id = user.id;
-                // 💡 FIX 5: Use 'subscriptionPlan' instead of 'tier'
                 token.subscriptionPlan = user.subscriptionPlan;
             }
-            // 💡 FIX 6: Handle session refresh triggered by update() call from client
             if (trigger === "update" && session && session.subscriptionPlan) {
-                // Update the token's subscriptionPlan with the new value from the update() payload
                 token.subscriptionPlan = session.subscriptionPlan;
             }
             return token;
         },
-        // Add custom properties (id, subscriptionPlan) to the session object exposed on the client
         async session ({ session, token }) {
             if (session.user) {
-                // @ts-ignore: Add custom properties to session.user
+                // @ts-ignore
                 session.user.id = token.id;
-                // 💡 FIX 7: Use 'subscriptionPlan' instead of 'tier'
-                // @ts-ignore: Access token.subscriptionPlan
+                // @ts-ignore
                 session.user.subscriptionPlan = token.subscriptionPlan;
             }
             return session;
@@ -341,7 +333,8 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$tier$2d$limits$2e$ts_
 async function POST(request) {
     try {
         const session = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2d$auth$2f$next$2f$index$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["getServerSession"])(__TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$auth$2d$config$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["authOptions"]);
-        const userTier = session ? "free" : "anonymous";
+        // Note: Assuming 'free' tier for session-less users, should be 'anonymous' if no session.
+        const userTier = session?.user?.subscriptionPlan || "anonymous";
         const limits = __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$tier$2d$limits$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["TIER_LIMITS"][userTier];
         const formData = await request.formData();
         const file = formData.get("file");
@@ -352,12 +345,22 @@ async function POST(request) {
                 status: 400
             });
         }
+        // Check file size limit (application logic check)
+        // We rely on request.formData() streaming but keep this check for user feedback.
+        if (file.size > 25 * 1024 * 1024) {
+            return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
+                error: "File size exceeds 25MB limit."
+            }, {
+                status: 413
+            });
+        }
         const buffer = await file.arrayBuffer();
         const zip = new __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$jszip$2f$lib$2f$index$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["default"]();
         await zip.loadAsync(buffer);
         const fileEntries = [];
         let fileCount = 0;
         zip.forEach((relativePath, zipEntry)=>{
+            // Exclude hidden files and directories (starting with '.')
             if (!relativePath.startsWith(".") && !relativePath.includes("/.")) {
                 fileEntries.push({
                     path: relativePath,
@@ -366,7 +369,7 @@ async function POST(request) {
                 if (!zipEntry.dir) fileCount++;
             }
         });
-        // Check file limit
+        // Check file count limit
         if (fileCount > limits.maxFilesPerZip) {
             return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
                 error: `Exceeded file limit. Your plan allows ${limits.maxFilesPerZip} files. Please upgrade your plan.`
@@ -375,7 +378,8 @@ async function POST(request) {
             });
         }
         // Store session data
-        const sessionId = Math.random().toString(36).substring(2, 11);
+        // Use a robust way to generate a unique session ID
+        const sessionId = `zip-session-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
         const { db } = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$mongodb$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["connectToDatabase"])();
         const sessionData = {
             sessionId,
@@ -391,15 +395,18 @@ async function POST(request) {
                 try {
                     const zipEntry = zip.file(entry.path);
                     if (zipEntry) {
-                        const content = await zipEntry.async("string");
+                        // Using 'text' if possible for better encoding compatibility
+                        const content = await zipEntry.async("text");
                         sessionData.files.set(entry.path, content);
                     }
                 } catch (err) {
                     console.error(`Failed to read ${entry.path}:`, err);
+                    // Handle files that cannot be read as text (e.g., binaries) by skipping them or giving an empty string.
+                    sessionData.files.set(entry.path, "");
                 }
             }
         }
-        // Store in Redis-like session (in production, use Redis)
+        // Store in database
         await db.collection("sessions").insertOne({
             sessionId,
             files: Object.fromEntries(sessionData.files),
