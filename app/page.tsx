@@ -134,7 +134,7 @@ const handleLoadSavedZip = useCallback((loadedFiles: SelectedFile[]) => {
       // Handle 413 (Content Too Large) errors which return non-JSON responses
       if (response.status === 413) {
         // This handles the upstream proxy limit, which often returns a non-JSON page
-        setError("File upload failed: The file is too large for the server to process. Please try a smaller ZIP file.");
+        setError("File upload failed: The file is too large for Free Plan If You Want to upload large zip file please upgrade to monthly or yearly plan");
         return;
       }
       
