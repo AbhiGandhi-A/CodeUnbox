@@ -239,7 +239,7 @@ const authOptions = {
     ],
     // Custom pages configuration to handle redirects
     pages: {
-        signIn: "/login",
+        signIn: "/register",
         error: "/login"
     },
     callbacks: {

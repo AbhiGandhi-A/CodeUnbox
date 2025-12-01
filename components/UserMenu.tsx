@@ -31,7 +31,7 @@ export function UserMenu() {
   // Display Sign In link if not authenticated
   if (!session) {
     return (
-      <Link href="/login" className={styles.loginBtn}>
+      <Link href="/register" className={styles.loginBtn}>
         Sign In
       </Link>
     )
