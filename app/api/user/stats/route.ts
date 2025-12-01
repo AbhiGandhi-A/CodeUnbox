@@ -22,6 +22,7 @@ export async function GET(request: NextRequest) {
 
     const savedZipsCount = await db.collection("saved_zips").countDocuments({ userId: session.user.id })
 
+    // Ensures the subscriptionPlan is pulled directly from the most up-to-date database record
     return NextResponse.json({
       success: true,
       stats: {

@@ -306,7 +306,8 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$razorpay$2f$
 ;
 async function POST(request) {
     try {
-        const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID || ("TURBOPACK compile-time value", "rzp_live_RSbChCKHSLHY03");
+        // Rely on private keys for server-side operations
+        const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID;
         const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET;
         if (!RAZORPAY_KEY_ID || !RAZORPAY_KEY_SECRET) {
             console.error("Missing Razorpay keys");
@@ -325,9 +326,10 @@ async function POST(request) {
             });
         }
         const { plan } = await request.json();
+        // Amounts should be in the smallest currency unit (paise for INR)
         const plans = {
             monthly: {
-                amount: 100,
+                amount: 200,
                 period: "month"
             },
             yearly: {
@@ -346,7 +348,7 @@ async function POST(request) {
             key_id: RAZORPAY_KEY_ID,
             key_secret: RAZORPAY_KEY_SECRET
         });
-        // 🔥 FIXED: Razorpay max 40 chars
+        // Fixed: Razorpay max 40 chars
         const receiptId = `ord_${session.user.id.slice(-6)}_${Date.now().toString().slice(-6)}`;
         const order = await razorpay.orders.create({
             amount: plans[plan].amount,
