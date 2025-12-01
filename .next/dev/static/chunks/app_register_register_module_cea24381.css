@@ -63,7 +63,7 @@
 
 @media (min-width: 1024px) {
   .register-module__B3synq__container {
-    grid-template-columns: 1.2fr .9fr;
+    grid-template-columns: 1.8fr .9fr;
     gap: 60px;
     padding: 0 120px;
     display: grid;
@@ -228,6 +228,7 @@
 
 .register-module__B3synq__title {
   text-align: center;
+  color: #000;
   margin-bottom: 26px;
   font-size: 30px;
   font-weight: 700;

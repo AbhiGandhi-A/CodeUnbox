@@ -1,29 +1,61 @@
 /* ------------------------- */
-/*         KEYFRAMES         */
+/*         KEYFRAMES         */
 /* ------------------------- */
 
 @keyframes blobMorph {
-  0% { transform: translate(0, 0) scale(1) rotate(0deg); }
-  25% { transform: translate(-80px, 60px) scale(1.15) rotate(20deg); }
-  50% { transform: translate(100px, -80px) scale(0.9) rotate(-15deg); }
-  75% { transform: translate(-50px, -40px) scale(1.1) rotate(10deg); }
-  100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+  0% {
+    transform: translate(0, 0) scale(1) rotate(0deg);
+  }
+
+  25% {
+    transform: translate(-80px, 60px) scale(1.15) rotate(20deg);
+  }
+
+  50% {
+    transform: translate(100px, -80px) scale(0.9) rotate(-15deg);
+  }
+
+  75% {
+    transform: translate(-50px, -40px) scale(1.1) rotate(10deg);
+  }
+
+  100% {
+    transform: translate(0, 0) scale(1) rotate(0deg);
+  }
 }
 
 @keyframes floatParticle {
-  0% { transform: translateY(0) scale(1); opacity: 0.5; }
-  50% { transform: translateY(-45px) scale(1.15); opacity: 0.9; }
-  100% { transform: translateY(0) scale(1); opacity: 0.5; }
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 0.5;
+  }
+
+  50% {
+    transform: translateY(-45px) scale(1.15);
+    opacity: 0.9;
+  }
+
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 0.5;
+  }
 }
 
 @keyframes fadeInSlow {
-  from { opacity: 0; transform: translateY(40px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 
 /* ------------------------- */
-/*         MAIN LAYOUT       */
+/*         MAIN LAYOUT       */
 /* ------------------------- */
 
 .container {
@@ -41,7 +73,8 @@
 @media (min-width: 1024px) {
   .container {
     display: grid;
-    grid-template-columns: 1.2fr 0.9fr;
+    /* 🌟 UPDATED: Left column is now 1.8fr (wider) to push the content/form right */
+    grid-template-columns: 1.8fr 0.9fr; 
     gap: 60px;
     padding: 0 120px;
   }
@@ -49,7 +82,7 @@
 
 
 /* ------------------------- */
-/*        BACKGROUND FX      */
+/*        BACKGROUND FX      */
 /* ------------------------- */
 
 .container::before,
@@ -88,15 +121,38 @@
   animation: floatParticle 6s infinite ease-in-out;
 }
 
-.particle:nth-child(1) { top: 18%; left: 15%; }
-.particle:nth-child(2) { top: 58%; left: 28%; animation-delay: 1s; }
-.particle:nth-child(3) { top: 42%; left: 76%; animation-delay: 2s; }
-.particle:nth-child(4) { top: 82%; left: 45%; animation-delay: 3s; }
-.particle:nth-child(5) { top: 28%; left: 58%; animation-delay: 4s; }
+.particle:nth-child(1) {
+  top: 18%;
+  left: 15%;
+}
+
+.particle:nth-child(2) {
+  top: 58%;
+  left: 28%;
+  animation-delay: 1s;
+}
+
+.particle:nth-child(3) {
+  top: 42%;
+  left: 76%;
+  animation-delay: 2s;
+}
+
+.particle:nth-child(4) {
+  top: 82%;
+  left: 45%;
+  animation-delay: 3s;
+}
+
+.particle:nth-child(5) {
+  top: 28%;
+  left: 58%;
+  animation-delay: 4s;
+}
 
 
 /* ------------------------- */
-/*       LEFT CONTENT        */
+/*       LEFT CONTENT        */
 /* ------------------------- */
 
 .content {
@@ -149,12 +205,12 @@
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.12);
   backdrop-filter: blur(4px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
 }
 
 
 /* ------------------------- */
-/*        FORM WRAPPER       */
+/*        FORM WRAPPER       */
 /* ------------------------- */
 
 .formWrapper {
@@ -167,7 +223,7 @@
 
 
 /* ------------------------- */
-/*         FORM CARD         */
+/*         FORM CARD         */
 /* ------------------------- */
 
 .form {
@@ -206,7 +262,7 @@
 
 
 /* ------------------------- */
-/*       FORM ELEMENTS       */
+/*       FORM ELEMENTS       */
 /* ------------------------- */
 
 .title {
@@ -214,6 +270,8 @@
   font-size: 30px;
   font-weight: 700;
   margin-bottom: 26px;
+  /* Title color is black, as previously requested */
+  color: #000000;
 }
 
 .formGroup {
@@ -233,7 +291,8 @@
   padding: 12px 14px;
   font-size: 15px;
   background: white;
-  color: #111; /* ⭐ FIX: Text always visible */
+  color: #111;
+  /* ⭐ FIX: Text always visible */
   border: 1px solid #d1d5db;
   border-radius: 8px;
   transition: border 0.25s ease;
@@ -251,7 +310,7 @@
 
 
 /* ------------------------- */
-/*         BUTTON            */
+/*         BUTTON            */
 /* ------------------------- */
 
 .button {
@@ -280,7 +339,7 @@
 
 
 /* ------------------------- */
-/*         FOOTER TEXT       */
+/*         FOOTER TEXT       */
 /* ------------------------- */
 
 .footer {
