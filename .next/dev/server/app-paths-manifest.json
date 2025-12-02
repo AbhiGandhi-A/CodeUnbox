@@ -5,5 +5,6 @@
   "/api/user/stats/route": "app/api/user/stats/route.js",
   "/billing/page": "app/billing/page.js",
   "/dashboard/page": "app/dashboard/page.js",
-  "/login/page": "app/login/page.js"
+  "/login/page": "app/login/page.js",
+  "/page": "app/page.js"
 }

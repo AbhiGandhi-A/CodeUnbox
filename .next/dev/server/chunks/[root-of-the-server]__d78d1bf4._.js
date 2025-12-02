@@ -290,6 +290,7 @@ module.exports = mod;
 "[project]/app/api/payment/create-order/route.ts [app-route] (ecmascript)", ((__turbopack_context__) => {
 "use strict";
 
+// /api/payment/create-order
 __turbopack_context__.s([
     "POST",
     ()=>POST
@@ -306,7 +307,6 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$razorpay$2f$
 ;
 async function POST(request) {
     try {
-        // Rely on private keys for server-side operations
         const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID;
         const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET;
         if (!RAZORPAY_KEY_ID || !RAZORPAY_KEY_SECRET) {
@@ -348,7 +348,6 @@ async function POST(request) {
             key_id: RAZORPAY_KEY_ID,
             key_secret: RAZORPAY_KEY_SECRET
         });
-        // Fixed: Razorpay max 40 chars
         const receiptId = `ord_${session.user.id.slice(-6)}_${Date.now().toString().slice(-6)}`;
         const order = await razorpay.orders.create({
             amount: plans[plan].amount,

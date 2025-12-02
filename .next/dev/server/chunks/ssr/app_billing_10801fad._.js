@@ -85,7 +85,6 @@ function BillingPage() {
     const { data: session, status, update } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2d$auth$2f$react$2f$index$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useSession"])();
     const router = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useRouter"])();
     const [currentPlan, setCurrentPlan] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])("free");
-    // Use separate loading states for initial data fetch and script load for better control
     const [isDataLoading, setIsDataLoading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(true);
     const [isScriptLoaded, setIsScriptLoaded] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(false);
     const [isProcessing, setIsProcessing] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(false);
@@ -99,7 +98,6 @@ function BillingPage() {
     // --- 1. Fetch current subscription from API on load ---
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
         if (status !== "authenticated" || !session?.user?.id) return;
-        // Check NextAuth Session first for instant client-side update
         if (session.user.subscriptionPlan && session.user.subscriptionPlan !== "anonymous") {
             setCurrentPlan(session.user.subscriptionPlan);
             setIsDataLoading(false);
@@ -126,20 +124,18 @@ function BillingPage() {
         session,
         status
     ]);
-    // --- 2. Load Razorpay script once (Fixes the console error) ---
+    // --- 2. Load Razorpay script once ---
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
         const script = document.createElement("script");
         script.src = "https://checkout.razorpay.com/v1/checkout.js";
         script.async = true;
-        // When the script loads successfully
         script.onload = ()=>{
             setIsScriptLoaded(true);
         };
-        // When the script fails to load (Addressing the Console Error)
         script.onerror = ()=>{
-            console.error("Failed to load Razorpay script. Check network connection or script source.");
+            console.error("Failed to load Razorpay script.");
             __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["toast"].error("Payment system failed to load. Please check your connection.");
-            setIsScriptLoaded(true); // Mark as handled even on error
+            setIsScriptLoaded(true);
         };
         document.body.appendChild(script);
         return ()=>{
@@ -148,7 +144,6 @@ function BillingPage() {
     }, []);
     // Final combined loading check
     const finalLoading = status === "loading" || isDataLoading || !isScriptLoaded;
-    // Helper function to render plan name
     const renderPlanName = (plan)=>{
         switch(plan){
             case "monthly":
@@ -161,7 +156,7 @@ function BillingPage() {
         }
     };
     const handleUpgrade = async (planId)=>{
-        if (!session?.user?.email) {
+        if (!session?.user?.email || !session?.user?.id) {
             __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["toast"].error("Please sign in first");
             return;
         }
@@ -169,7 +164,6 @@ function BillingPage() {
             __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["toast"].error("Payment system is still loading or failed to initialize.");
             return;
         }
-        // 💡 FIX: Ensure we use the NEXT_PUBLIC_ key for client-side check
         const razorpayKey = ("TURBOPACK compile-time value", "rzp_live_RSbChCKHSLHY03");
         if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
         ;
@@ -189,6 +183,7 @@ function BillingPage() {
             if (!orderResponse.ok) {
                 console.error("API Error creating order:", orderData.error);
                 __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["toast"].error(orderData.error || "Failed to create order");
+                setIsProcessing(false); // Reset on API failure
                 return;
             }
             console.log("Order Created:", orderData.orderId);
@@ -198,6 +193,10 @@ function BillingPage() {
                 amount: orderData.amount,
                 currency: orderData.currency,
                 order_id: orderData.orderId,
+                name: "CodeUnbox Subscription",
+                description: `${renderPlanName(planId)} Plan`,
+                image: "/logo.png",
+                // --- Core Payment Success Handler ---
                 handler: async (response)=>{
                     try {
                         // 3. Verify Payment
@@ -207,26 +206,32 @@ function BillingPage() {
                                 "Content-Type": "application/json"
                             },
                             body: JSON.stringify({
-                                orderId: orderData.orderId,
-                                paymentId: response.razorpay_payment_id,
-                                signature: response.razorpay_signature
+                                // Using the exact field names expected by the corrected server route
+                                razorpay_order_id: orderData.orderId,
+                                razorpay_payment_id: response.razorpay_payment_id,
+                                razorpay_signature: response.razorpay_signature,
+                                plan: planId,
+                                userId: session.user.id
                             })
                         });
                         const verifyData = await verifyResponse.json();
-                        if (verifyResponse.ok) {
-                            __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["toast"].success(`Subscription upgraded to ${planId.charAt(0).toUpperCase() + planId.slice(1)}! You can now access all premium features.`);
+                        if (verifyResponse.ok && verifyData.success) {
+                            __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["toast"].success(`Subscription upgraded to ${renderPlanName(planId)}!`);
                             // 4. Update state and session
+                            // Use the data returned from the server (verifyData.user.plan)
                             await update({
-                                subscriptionPlan: planId
+                                subscriptionPlan: verifyData.user.plan
                             });
-                            setCurrentPlan(planId);
+                            setCurrentPlan(verifyData.user.plan);
                         } else {
-                            __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["toast"].error(verifyData.error || "Verification failed");
+                            // Failed verification on server side
+                            __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["toast"].error(verifyData.error || "Verification failed on server.");
                         }
                     } catch (error) {
                         console.error("Verification error:", error);
-                        __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["toast"].error("Payment verification failed");
+                        __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["toast"].error("Payment verification failed due to client/server error.");
                     } finally{
+                        // 5. Reset processing state after verification attempt
                         setIsProcessing(false);
                     }
                 },
@@ -234,13 +239,17 @@ function BillingPage() {
                     name: session.user.name,
                     email: session.user.email
                 },
+                // FIX: Modal Dismissal Handler is the key for stuck button on Vercel
                 modal: {
                     ondismiss: ()=>{
+                        // This ensures the button is re-enabled if the user closes the modal manually
                         setIsProcessing(false);
+                        (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["toast"])("Payment window closed. Try again if you wish to upgrade.");
                     }
                 }
             };
             const rzp = new window.Razorpay(options);
+            // FIX: Payment Failure Hook ensures state reset on Razorpay-detected failure
             rzp.on('payment.failed', (response)=>{
                 console.error("Payment failed:", response.error);
                 __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["toast"].error(`Payment failed: ${response.error.description || 'Check details and try again.'}`);
@@ -248,21 +257,21 @@ function BillingPage() {
             });
             rzp.open();
         } catch (err) {
-            console.error("Unexpected error:", err);
-            __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["toast"].error("Upgrade process failed");
-        } finally{
-        // Reset isProcessing if error occurred before Razorpay modal opened
-        // If modal opened, it is handled in modal.ondismiss or handler finally
-        // We rely on the internal resets now that we have them.
+            console.error("Unexpected error in upgrade process:", err);
+            __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["toast"].error("Upgrade process failed due to an unexpected error.");
+            setIsProcessing(false); // Ensure reset on generic fetch failure
         }
+    // The previous unnecessary `finally` block with setTimeout is removed, 
+    // relying on the robust Razorpay hooks.
     };
+    // ... (rest of the component structure remains the same)
     if (finalLoading) {
         return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
             className: __TURBOPACK__imported__module__$5b$project$5d2f$app$2f$billing$2f$billing$2e$module$2e$css__$5b$app$2d$ssr$5d$__$28$css__module$29$__["default"].loading,
             children: "Loading..."
         }, void 0, false, {
             fileName: "[project]/app/billing/page.tsx",
-            lineNumber: 246,
+            lineNumber: 254,
             columnNumber: 12
         }, this);
     }
@@ -281,7 +290,7 @@ function BillingPage() {
                                 children: session.user.name?.charAt(0).toUpperCase()
                             }, void 0, false, {
                                 fileName: "[project]/app/billing/page.tsx",
-                                lineNumber: 256,
+                                lineNumber: 264,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -292,7 +301,7 @@ function BillingPage() {
                                         children: session.user.name
                                     }, void 0, false, {
                                         fileName: "[project]/app/billing/page.tsx",
-                                        lineNumber: 258,
+                                        lineNumber: 266,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -300,19 +309,19 @@ function BillingPage() {
                                         children: session.user.email
                                     }, void 0, false, {
                                         fileName: "[project]/app/billing/page.tsx",
-                                        lineNumber: 259,
+                                        lineNumber: 267,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/billing/page.tsx",
-                                lineNumber: 257,
+                                lineNumber: 265,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/billing/page.tsx",
-                        lineNumber: 255,
+                        lineNumber: 263,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("nav", {
@@ -324,7 +333,7 @@ function BillingPage() {
                                 children: "Dashboard"
                             }, void 0, false, {
                                 fileName: "[project]/app/billing/page.tsx",
-                                lineNumber: 264,
+                                lineNumber: 272,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
@@ -333,7 +342,7 @@ function BillingPage() {
                                 children: "Billing"
                             }, void 0, false, {
                                 fileName: "[project]/app/billing/page.tsx",
-                                lineNumber: 265,
+                                lineNumber: 273,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
@@ -342,19 +351,19 @@ function BillingPage() {
                                 children: "Back to Explorer"
                             }, void 0, false, {
                                 fileName: "[project]/app/billing/page.tsx",
-                                lineNumber: 266,
+                                lineNumber: 274,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/billing/page.tsx",
-                        lineNumber: 263,
+                        lineNumber: 271,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/billing/page.tsx",
-                lineNumber: 254,
+                lineNumber: 262,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("main", {
@@ -365,7 +374,7 @@ function BillingPage() {
                         children: "Billing & Plans"
                     }, void 0, false, {
                         fileName: "[project]/app/billing/page.tsx",
-                        lineNumber: 272,
+                        lineNumber: 280,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -376,7 +385,7 @@ function BillingPage() {
                                 children: "Current Plan"
                             }, void 0, false, {
                                 fileName: "[project]/app/billing/page.tsx",
-                                lineNumber: 276,
+                                lineNumber: 284,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
@@ -384,13 +393,13 @@ function BillingPage() {
                                 children: renderPlanName(currentPlan)
                             }, void 0, false, {
                                 fileName: "[project]/app/billing/page.tsx",
-                                lineNumber: 277,
+                                lineNumber: 285,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/billing/page.tsx",
-                        lineNumber: 275,
+                        lineNumber: 283,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -403,7 +412,7 @@ function BillingPage() {
                                         children: plan.name
                                     }, void 0, false, {
                                         fileName: "[project]/app/billing/page.tsx",
-                                        lineNumber: 288,
+                                        lineNumber: 296,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -417,7 +426,7 @@ function BillingPage() {
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/app/billing/page.tsx",
-                                                lineNumber: 291,
+                                                lineNumber: 299,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -428,13 +437,13 @@ function BillingPage() {
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/app/billing/page.tsx",
-                                                lineNumber: 292,
+                                                lineNumber: 300,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/billing/page.tsx",
-                                        lineNumber: 290,
+                                        lineNumber: 298,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
@@ -447,12 +456,12 @@ function BillingPage() {
                                                 ]
                                             }, i, true, {
                                                 fileName: "[project]/app/billing/page.tsx",
-                                                lineNumber: 297,
+                                                lineNumber: 305,
                                                 columnNumber: 19
                                             }, this))
                                     }, void 0, false, {
                                         fileName: "[project]/app/billing/page.tsx",
-                                        lineNumber: 295,
+                                        lineNumber: 303,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -462,18 +471,18 @@ function BillingPage() {
                                         children: currentPlan === plan.id ? "Current Plan" : isProcessing ? "Processing..." : "Upgrade Now"
                                     }, void 0, false, {
                                         fileName: "[project]/app/billing/page.tsx",
-                                        lineNumber: 301,
+                                        lineNumber: 309,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, plan.id, true, {
                                 fileName: "[project]/app/billing/page.tsx",
-                                lineNumber: 284,
+                                lineNumber: 292,
                                 columnNumber: 13
                             }, this))
                     }, void 0, false, {
                         fileName: "[project]/app/billing/page.tsx",
-                        lineNumber: 282,
+                        lineNumber: 290,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
@@ -483,7 +492,7 @@ function BillingPage() {
                                 children: "Frequently Asked Questions"
                             }, void 0, false, {
                                 fileName: "[project]/app/billing/page.tsx",
-                                lineNumber: 313,
+                                lineNumber: 321,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -493,20 +502,20 @@ function BillingPage() {
                                         children: "Can I cancel anytime?"
                                     }, void 0, false, {
                                         fileName: "[project]/app/billing/page.tsx",
-                                        lineNumber: 316,
+                                        lineNumber: 324,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                         children: "Yes, cancel anytime — you retain access until the end of your billing period."
                                     }, void 0, false, {
                                         fileName: "[project]/app/billing/page.tsx",
-                                        lineNumber: 317,
+                                        lineNumber: 325,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/billing/page.tsx",
-                                lineNumber: 315,
+                                lineNumber: 323,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -516,20 +525,20 @@ function BillingPage() {
                                         children: "What payment methods do you accept?"
                                     }, void 0, false, {
                                         fileName: "[project]/app/billing/page.tsx",
-                                        lineNumber: 323,
+                                        lineNumber: 331,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                         children: "All debit cards, credit cards, UPI, wallets through Razorpay."
                                     }, void 0, false, {
                                         fileName: "[project]/app/billing/page.tsx",
-                                        lineNumber: 324,
+                                        lineNumber: 332,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/billing/page.tsx",
-                                lineNumber: 322,
+                                lineNumber: 330,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -539,38 +548,38 @@ function BillingPage() {
                                         children: "Can I switch plans?"
                                     }, void 0, false, {
                                         fileName: "[project]/app/billing/page.tsx",
-                                        lineNumber: 328,
+                                        lineNumber: 336,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                         children: "Yes, upgrades and downgrades are supported anytime."
                                     }, void 0, false, {
                                         fileName: "[project]/app/billing/page.tsx",
-                                        lineNumber: 329,
+                                        lineNumber: 337,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/billing/page.tsx",
-                                lineNumber: 327,
+                                lineNumber: 335,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/billing/page.tsx",
-                        lineNumber: 312,
+                        lineNumber: 320,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/billing/page.tsx",
-                lineNumber: 271,
+                lineNumber: 279,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/app/billing/page.tsx",
-        lineNumber: 252,
+        lineNumber: 260,
         columnNumber: 5
     }, this);
 }

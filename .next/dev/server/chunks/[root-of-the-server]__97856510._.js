@@ -266,11 +266,12 @@ const authOptions = {
 "[project]/app/api/payment/verify/route.ts [app-route] (ecmascript)", ((__turbopack_context__) => {
 "use strict";
 
+// /api/payment/verify
 __turbopack_context__.s([
     "POST",
     ()=>POST
 ]);
-var __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$mongodb$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/lib/mongodb.ts [app-route] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$mongodb$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/lib/mongodb.ts [app-route] (ecmascript)"); // Use your consistent MongoDB connection utility
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/server.js [app-route] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2d$auth$2f$next$2f$index$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next-auth/next/index.js [app-route] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$auth$2d$config$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/lib/auth-config.ts [app-route] (ecmascript)");
@@ -287,6 +288,7 @@ async function POST(request) {
         const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET;
         if (!RAZORPAY_KEY_SECRET) {
             return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
+                success: false,
                 error: "Payment server misconfigured"
             }, {
                 status: 500
@@ -295,35 +297,48 @@ async function POST(request) {
         const session = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2d$auth$2f$next$2f$index$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["getServerSession"])(__TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$auth$2d$config$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["authOptions"]);
         if (!session?.user?.id) {
             return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
+                success: false,
                 error: "Authentication required"
             }, {
                 status: 401
             });
         }
-        const { orderId, paymentId, signature } = await request.json();
-        // Signature verification
-        const expected = __TURBOPACK__imported__module__$5b$externals$5d2f$crypto__$5b$external$5d$__$28$crypto$2c$__cjs$29$__["default"].createHmac("sha256", RAZORPAY_KEY_SECRET) // Assert type for Hmac function
-        .update(`${orderId}|${paymentId}`).digest("hex");
-        if (expected !== signature) {
+        // Capture the names sent from the client
+        const { razorpay_order_id: orderId, razorpay_payment_id: paymentId, razorpay_signature: signature, plan, userId } = await request.json();
+        if (!orderId || !paymentId || !signature || !plan || !userId) {
             return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
-                error: "Payment verification failed"
+                success: false,
+                error: "Missing required verification data (orderId, paymentId, signature, plan, or userId)."
             }, {
                 status: 400
             });
         }
+        // --- 1. Signature Verification ---
+        const expectedSignature = __TURBOPACK__imported__module__$5b$externals$5d2f$crypto__$5b$external$5d$__$28$crypto$2c$__cjs$29$__["default"].createHmac("sha256", RAZORPAY_KEY_SECRET).update(`${orderId}|${paymentId}`).digest("hex");
+        if (expectedSignature !== signature) {
+            return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
+                success: false,
+                error: "Payment verification failed: Invalid signature."
+            }, {
+                status: 400
+            });
+        }
+        // --- 2. Database Updates ---
         const { db } = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$mongodb$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["connectToDatabase"])();
-        // Fetch order details
+        // 2a. Update Order status
+        // Fetch the order first to get details and verify ownership if necessary
         const order = await db.collection("orders").findOne({
-            orderId
+            orderId,
+            userId: session.user.id
         });
         if (!order) {
             return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
-                error: "Order not found"
+                success: false,
+                error: "Order not found or ownership mismatch."
             }, {
                 status: 404
             });
         }
-        // Update order status
         await db.collection("orders").updateOne({
             orderId
         }, {
@@ -337,25 +352,44 @@ async function POST(request) {
         const expiry = new Date();
         if (order.plan === "monthly") expiry.setMonth(expiry.getMonth() + 1);
         else expiry.setFullYear(expiry.getFullYear() + 1);
-        // Update user's subscription in the database
-        await db.collection("users").updateOne({
+        // 2b. Update user's subscription in the database (using session.user.id which is an ObjectId)
+        const updateResult = await db.collection("users").findOneAndUpdate({
             _id: new __TURBOPACK__imported__module__$5b$externals$5d2f$mongodb__$5b$external$5d$__$28$mongodb$2c$__cjs$29$__["ObjectId"](session.user.id)
         }, {
             $set: {
-                subscriptionPlan: order.plan,
+                subscriptionPlan: plan,
                 subscriptionExpiry: expiry,
                 updatedAt: new Date()
             }
+        }, {
+            returnDocument: 'after'
         });
+        if (!updateResult.value) {
+            return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
+                success: false,
+                error: "Payment verified, but failed to update user record."
+            }, {
+                status: 404
+            });
+        }
+        // Return the necessary data to the client to update the NextAuth session
+        const updatedUser = updateResult.value;
+        const clientUser = {
+            id: updatedUser._id.toHexString(),
+            name: updatedUser.name,
+            email: updatedUser.email,
+            plan: updatedUser.subscriptionPlan
+        };
         return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
             success: true,
-            message: "Payment verified",
-            plan: order.plan
+            message: "Payment verified successfully",
+            user: clientUser
         });
     } catch (error) {
         console.error("Verification error:", error);
         return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
-            error: "Verification failed"
+            success: false,
+            error: "Verification failed due to a server error"
         }, {
             status: 500
         });

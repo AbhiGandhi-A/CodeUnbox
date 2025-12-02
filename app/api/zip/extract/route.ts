@@ -27,8 +27,8 @@ export async function POST(request: NextRequest) {
     
     // Check file size limit (application logic check)
     // We rely on request.formData() streaming but keep this check for user feedback.
-    if (file.size > 25 * 1024 * 1024) { // 25MB limit check inside the application logic
-      return NextResponse.json({ error: "File size exceeds 25MB limit." }, { status: 413 })
+    if (file.size > 60 * 1024 * 1024) { // 25MB limit check inside the application logic
+      return NextResponse.json({ error: "File size exceeds 60MB limit." }, { status: 413 })
     }
 
 
